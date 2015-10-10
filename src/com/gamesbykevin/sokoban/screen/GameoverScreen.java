@@ -5,12 +5,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+
 import com.gamesbykevin.androidframework.awt.Button;
 import com.gamesbykevin.androidframework.resources.Audio;
 import com.gamesbykevin.androidframework.resources.Disposable;
 import com.gamesbykevin.androidframework.resources.Font;
 import com.gamesbykevin.androidframework.resources.Images;
 import com.gamesbykevin.androidframework.screen.Screen;
+
 import com.gamesbykevin.sokoban.MainActivity;
 import com.gamesbykevin.sokoban.assets.Assets;
 import com.gamesbykevin.sokoban.panel.GamePanel;
@@ -34,7 +36,7 @@ public class GameoverScreen implements Screen, Disposable
     private int pixelW;
     
     //buttons
-    private Button restart, mainmenu, rateapp, exitgame;
+    private Button nextLevel, mainmenu, rateapp, exitgame;
     
     //time we have displayed text
     private long time;
@@ -50,7 +52,7 @@ public class GameoverScreen implements Screen, Disposable
     /**
      * The alpha visibility when the menu is not shown
      */
-    private static final int ALPHA_DARK = 125;
+    private static final int ALPHA_DARK = 75;
     
     /**
      * The alpha visibility when the menu is shown
@@ -60,7 +62,7 @@ public class GameoverScreen implements Screen, Disposable
     /**
      * The text to display for the new game
      */
-    private static final String BUTTON_TEXT_NEW_GAME = "New Game";
+    private static final String BUTTON_TEXT_NEW_GAME = "Next Level";
     
     /**
      * The text to display for the menu
@@ -78,12 +80,12 @@ public class GameoverScreen implements Screen, Disposable
 
         //create our buttons
         y += addY;
-        this.restart = new Button(Images.getImage(Assets.ImageKey.Button));
-        this.restart.setX(x);
-        this.restart.setY(y);
-        this.restart.updateBounds();
-        this.restart.setText(BUTTON_TEXT_NEW_GAME);
-        this.restart.positionText(screen.getPaint());
+        this.nextLevel = new Button(Images.getImage(Assets.ImageKey.Button));
+        this.nextLevel.setX(x);
+        this.nextLevel.setY(y);
+        this.nextLevel.updateBounds();
+        this.nextLevel.setText(BUTTON_TEXT_NEW_GAME);
+        this.nextLevel.positionText(screen.getPaint());
         
         y += addY;
         this.mainmenu = new Button(Images.getImage(Assets.ImageKey.Button));
@@ -160,7 +162,7 @@ public class GameoverScreen implements Screen, Disposable
         
         if (event.getAction() == MotionEvent.ACTION_UP)
         {
-            if (restart.contains(x, y))
+            if (nextLevel.contains(x, y))
             {
                 //stop sound
                 Audio.stop();
@@ -171,8 +173,14 @@ public class GameoverScreen implements Screen, Disposable
                 //move back to the game
                 screen.setState(MainScreen.State.Running);
                 
-                //restart game with the same settings
-                screen.getScreenGame().getGame().reset();
+                //move to next level
+                screen.getScreenGame().getGame().getLevels().setIndex(screen.getScreenGame().getGame().getLevels().getIndex() + 1);
+                
+                //setup next level
+                screen.getScreenGame().getGame().getLevels().reset();
+                
+                //position player at start of next level
+                screen.getScreenGame().getGame().getPlayer().reset(screen.getScreenGame().getGame().getLevels().getLevel());
             }
             else if (mainmenu.contains(x, y))
             {
@@ -230,7 +238,7 @@ public class GameoverScreen implements Screen, Disposable
     @Override
     public void render(final Canvas canvas) throws Exception
     {
-        //darken background accordingly
+        //if the menu is displayed we will darken the background accordingly
         if (display)
         {
             MainScreen.darkenBackground(canvas, ALPHA_DARK_OTHER);
@@ -254,7 +262,7 @@ public class GameoverScreen implements Screen, Disposable
         if (display)
         {
             //render buttons
-            restart.render(canvas, screen.getPaint());
+            nextLevel.render(canvas, screen.getPaint());
             rateapp.render(canvas, screen.getPaint());
             mainmenu.render(canvas, screen.getPaint());
             exitgame.render(canvas, screen.getPaint());
@@ -267,10 +275,10 @@ public class GameoverScreen implements Screen, Disposable
         if (paintMessage != null)
             paintMessage = null;
         
-        if (restart != null)
+        if (nextLevel != null)
         {
-            restart.dispose();
-            restart = null;
+            nextLevel.dispose();
+            nextLevel = null;
         }
         
         if (mainmenu != null)

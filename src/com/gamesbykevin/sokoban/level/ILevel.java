@@ -17,4 +17,9 @@ public interface ILevel
      * @throws Exception if problem loading the current line
      */
     public void load(final String line) throws Exception;
+    
+    /**
+     * Logic to update level
+     */
+    public void update();
 }

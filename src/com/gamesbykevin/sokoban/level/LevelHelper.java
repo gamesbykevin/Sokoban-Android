@@ -6,6 +6,7 @@ import com.gamesbykevin.sokoban.assets.Assets;
 
 import com.gamesbykevin.sokoban.level.tile.*;
 import com.gamesbykevin.sokoban.panel.GamePanel;
+import com.gamesbykevin.sokoban.target.Target;
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -25,9 +26,8 @@ public class LevelHelper
     /**
      * Create the tiles and select animations
      * @param tiles The list of tiles for our level
-     * @throws Exception
      */
-    public static void createTiles(final HashMap<Tile.Type, Tile> tiles) throws Exception
+    public static void createTiles(final HashMap<Tile.Type, Tile> tiles)
     {
         //create new list of possible block styles
         List<Block.Style> styles = new ArrayList<Block.Style>();
@@ -91,6 +91,7 @@ public class LevelHelper
                 styles.add(Block.Style.Brown);
                 break;
                 
+            default:
             case WALL_COLOR_BEIGE:
                 
                 //create wall
@@ -107,9 +108,6 @@ public class LevelHelper
                 styles.add(Block.Style.Brown);
                 styles.add(Block.Style.Black);
                 break;
-                
-            default:
-                throw new Exception("Random number not handled here - " + random);
         }
         
         //pick random index
@@ -145,26 +143,83 @@ public class LevelHelper
             case Beige:
                 tiles.put(Tile.Type.Goal, new Goal(Goal.Style.Beige));
                 break;
-                
+     
+            default:
             case Gray:
                 tiles.put(Tile.Type.Goal, new Goal(Goal.Style.Gray));
                 break;
-                
-            default:
-                throw new Exception("Block style not handled here " + styles.get(index));
         }
         
         //add block to hashmap
         tiles.put(Tile.Type.Block, new Block(styles.get(index)));
     }
     
+    /**
+     * Get the x-coordinate of the specified column
+     * @param level Current level of play
+     * @param col column location
+     * @return coordinate of specified location
+     */
     public static final double getX(final Level level, final double col)
     {
         return level.getStartX() + (col * TileHelper.DEFAULT_DIMENSION);
     }
     
+    /**
+     * Get the y-coordinate of the specified row
+     * @param level Current level of play
+     * @param row row location
+     * @return coordinate of specified location
+     */
     public static final double getY(final Level level, final double row)
     {
         return level.getStartY() + (row * TileHelper.DEFAULT_DIMENSION);
+    }
+    
+    /**
+     * Get the column
+     * @param level Current level of game play
+     * @param x x-coordinate
+     * @return The columns of the specified coordinate
+     */
+    public static final double getCol(final Level level, final double x)
+    {
+        if (x < level.getStartX())
+            return -1;
+        
+        return ((x - level.getStartX()) / TileHelper.DEFAULT_DIMENSION);
+    }
+    
+    /**
+     * Get the row
+     * @param level Current level of game play
+     * @param y y-coordinate
+     * @return The row of the specified coordinate
+     */
+    public static final double getRow(final Level level, final double y)
+    {
+        if (y < level.getStartY())
+            return -1;
+        
+        return ((y - level.getStartY()) / TileHelper.DEFAULT_DIMENSION);
+    }
+    
+    /**
+     * Has the level been completed?
+     * @param level The current level we want to check
+     * @return true if all blocks are at a goal, false otherwise
+     */
+    public static final boolean hasCompleted(final Level level)
+    {
+        //check all targets
+        for (Target target : level.getCurrent())
+        {
+            //if 1 target is not at the goal, the level is not complete
+            if (!target.hasGoal())
+                return false;
+        }
+        
+        //all targets are at a goal, return true
+        return true;
     }
 }

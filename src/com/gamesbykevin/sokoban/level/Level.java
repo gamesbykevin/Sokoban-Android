@@ -1,12 +1,18 @@
 package com.gamesbykevin.sokoban.level;
 
+import android.graphics.Canvas;
+
 import com.gamesbykevin.androidframework.base.Cell;
 import com.gamesbykevin.androidframework.resources.Disposable;
+import com.gamesbykevin.sokoban.level.tile.Block;
 
 import com.gamesbykevin.sokoban.level.tile.Tile;
+import com.gamesbykevin.sokoban.level.tile.TileHelper;
+import com.gamesbykevin.sokoban.player.Player;
 import com.gamesbykevin.sokoban.target.Target;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,7 +24,7 @@ public final class Level implements Disposable, ILevel
     //the key for this level
     private Tile.Type[][] key;
     
-    //the character values
+    //the character key values
     protected static final String KEY_WALL = "#";
     protected static final String KEY_PLAYER = "@";
     protected static final String KEY_PLAYER_ON_GOAL = "+";
@@ -37,27 +43,46 @@ public final class Level implements Disposable, ILevel
     private List<Target> current;
     
     //the start coordinate
-    private final int startX, startY;
+    private int startX = 0, startY = 0;
+    
+    //the dimensions of the level where we could render the entire level on the screen
+    protected static final int SINGLE_SCREEN_MAX_COLS = 7;
+    
+    //the dimensions of the level where we could render the entire level on the screen
+    protected static final int SINGLE_SCREEN_MAX_ROW = 12;
     
     /**
      * Create the level
-     * @param cols Total column size of level
-     * @param rows Total row size of level
-     * @param startX Start x-coordinate of (0,0)
-     * @param startY Start y-coordinate of (0,0)
+     * @param tracker Object containing level info
      */
-    protected Level(final int cols, final int rows, final int startX, final int startY)
+    protected Level(final Tracker tracker)
     {
         //create new key
-        this.key = new Tile.Type[rows][cols];
+        this.key = new Tile.Type[tracker.getRows()][tracker.getCols()];
         
         //create a new list for the blocks
         this.blocks = new ArrayList<Cell>();
         
         //create a new list for the current/destination
         this.current = new ArrayList<Target>();
-        
-        //store starting coordinate
+    }
+    
+    /**
+     * Can this entire level fit inside a single window?
+     * @return true if the total (columns, rows) are within range, false otherwise
+     */
+    public boolean canFitWindow()
+    {
+        return (getKey().length <= SINGLE_SCREEN_MAX_ROW && getKey()[0].length <= SINGLE_SCREEN_MAX_COLS);
+    }
+    
+    /**
+     * Set the starting location of the first tile (0,0)
+     * @param startX Starting x-coordinate
+     * @param startY Starting y-coordinate
+     */
+    public void setStartLocation(final int startX, final int startY)
+    {
         this.startX = startX;
         this.startY = startY;
     }
@@ -76,9 +101,47 @@ public final class Level implements Disposable, ILevel
      * Get the key
      * @return The array representing the layout of the level
      */
-    public Tile.Type[][] getKey()
+    private Tile.Type[][] getKey()
     {
         return this.key;
+    }
+    
+    /**
+     * Get the tile type at the specified location.
+     * @param col Column
+     * @param row Row
+     * @return The tile type of the specified location, if out of bounds null will be returned
+     */
+    public Tile.Type getType(final int col, final int row)
+    {
+        //if out of range return null
+        if (col < 0 || col >= getKey()[0].length)
+            return null;
+        if (row < 0 || row >= getKey().length)
+            return null;
+        
+        //return the tile type
+        return (getKey()[row][col]);
+    }
+    
+    /**
+     * Get the block that matches the specified (col, row)<br>
+     * @param col Column
+     * @param row Row
+     * @return The block that has the matching location, if no match is found null is returned
+     */
+    public Target getBlock(final int col, final int row)
+    {
+        //check each block
+        for (Target block : getCurrent())
+        {
+            //if location matches we have a block
+            if (block.getCol() == col && block.getRow() == row)
+                return block;
+        }
+        
+        //there is no block here
+        return null;
     }
     
     /**
@@ -91,7 +154,7 @@ public final class Level implements Disposable, ILevel
     }
     
     /**
-     * Get the current list of blocks
+     * Get the current location of the blocks
      * @return The current location/destination of each block
      */
     public List<Target> getCurrent()
@@ -100,12 +163,79 @@ public final class Level implements Disposable, ILevel
     }
     
     /**
-     * Get the blocks
+     * Get the list of starting locations for the blocks
      * @return The starting locations of all blocks in the level
      */
     public List<Cell> getBlocks()
     {
         return this.blocks;
+    }
+    
+    /**
+     * Update the location of the blocks if not at their target
+     */
+    public void update()
+    {
+        //check each block location
+        for (Target block : getCurrent())
+        {
+            if (!block.hasDestination())
+            {
+                if (block.getCol() < block.getDestination().getCol())
+                {
+                    if (block.getCol() + Player.VELOCITY >= block.getDestination().getCol())
+                    {
+                        block.setCol(block.getDestination().getCol());
+                    }
+                    else
+                    {
+                        block.setCol(block.getCol() + Player.VELOCITY);
+                    }
+                }
+                else if (block.getCol() > block.getDestination().getCol())
+                {
+                    if (block.getCol() - Player.VELOCITY <= block.getDestination().getCol())
+                    {
+                        block.setCol(block.getDestination().getCol());
+                    }
+                    else
+                    {
+                        block.setCol(block.getCol() - Player.VELOCITY);
+                    }
+                }
+                else if (block.getRow() < block.getDestination().getRow())
+                {
+                    if (block.getRow() + Player.VELOCITY >= block.getDestination().getRow())
+                    {
+                        block.setRow(block.getDestination().getRow());
+                    }
+                    else
+                    {
+                        block.setRow(block.getRow() + Player.VELOCITY);
+                    }
+                }
+                else if (block.getRow() > block.getDestination().getRow())
+                {
+                    if (block.getRow() - Player.VELOCITY <= block.getDestination().getRow())
+                    {
+                        block.setRow(block.getDestination().getRow());
+                    }
+                    else
+                    {
+                        block.setRow(block.getRow() - Player.VELOCITY);
+                    }
+                }
+                
+                //if the block is now at its destination, check if it is on a goal
+                if (block.hasDestination())
+                    block.setGoal(TileHelper.isGoal(getType((int)block.getCol(), (int)block.getRow())));
+            }
+            else
+            {
+                //if the block is now at its destination, check if it is on a goal
+                block.setGoal(TileHelper.isGoal(getType((int)block.getCol(), (int)block.getRow())));
+            }
+        }
     }
     
     @Override
@@ -139,9 +269,9 @@ public final class Level implements Disposable, ILevel
     }
     
     /**
-     * Load the level based on the characters in the specified line.<br>
+     * Load the level based on the characters in the specified String line.<br>
      * When we check the rows in the level key to determine which row we populate this line to
-     * @param line The given line containing characters
+     * @param line The given line containing characters that will determine the level
      * @throws Exception
      */
     public void load(final String line) throws Exception
@@ -170,7 +300,7 @@ public final class Level implements Disposable, ILevel
                 }
                 else if (character.equals(KEY_PLAYER))
                 {
-                    //store start location
+                    //store start location for player
                     start = new Cell(index, row);
                     
                     //assign key
@@ -247,5 +377,73 @@ public final class Level implements Disposable, ILevel
         
         //yes all objects are null
         return true;
+    }
+    
+    /**
+     * Render the level
+     * @param canvas Object used to write pixel data
+     * @param tiles List of tiles to render our level
+     * @throws Exception 
+     */
+    public void render(final Canvas canvas, final HashMap<Tile.Type, Tile> tiles) throws Exception
+    {
+        for (int row = 0; row < getKey().length; row++)
+        {
+            for (int col = 0; col < getKey()[0].length; col++)
+            {
+                final int x = (int)LevelHelper.getX(this, col);
+                final int y = (int)LevelHelper.getY(this, row);
+                
+                //skip if null
+                if (getKey()[row][col] == null)
+                    continue;
+                
+                //render floor everywhere
+                Tile tile = tiles.get(Tile.Type.Floor);
+                
+                //assign coordinates
+                tile.setX(x);
+                tile.setY(y);
+                
+                //render the floor
+                tile.render(canvas);
+                
+                //get the assigned tile by its type
+                tile = tiles.get(getKey()[row][col]);
+                
+                //render tile accordingly
+                switch (tile.getType())
+                {
+                    case Wall:
+                    case Goal:
+                    case Block:
+                        tile.setX(x + (TileHelper.DEFAULT_DIMENSION / 2) - (tile.getWidth() / 2));
+                        tile.setY(y + (TileHelper.DEFAULT_DIMENSION / 2) - (tile.getHeight() / 2));
+                        tile.render(canvas);
+                        break;
+                }
+            }
+        }
+        
+        //get the block tile
+        Tile tile = tiles.get(Tile.Type.Block);
+        
+        //render blocks for each location
+        for (Target cell : getCurrent())
+        {
+            //get the (x,y) location
+            final int x = (int)LevelHelper.getX(this, cell.getCol());
+            final int y = (int)LevelHelper.getY(this, cell.getRow());
+            
+            //assign the location
+            tile.setX(x + (TileHelper.DEFAULT_DIMENSION / 2) - (tile.getWidth() / 2));
+            tile.setY(y + (TileHelper.DEFAULT_DIMENSION / 2) - (tile.getHeight() / 2));
+            
+            //default block animation
+            tile.getSpritesheet().setKey(cell.hasGoal() ? Block.State.Alternate : Block.State.Default);
+            
+            //render the tile
+            tile.render(canvas);
+        }
     }
 }

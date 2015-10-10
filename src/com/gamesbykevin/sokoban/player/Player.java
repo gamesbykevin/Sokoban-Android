@@ -5,18 +5,30 @@ import android.graphics.Canvas;
 import com.gamesbykevin.androidframework.anim.Animation;
 import com.gamesbykevin.androidframework.base.Cell;
 import com.gamesbykevin.androidframework.base.Entity;
-import com.gamesbykevin.androidframework.resources.Disposable;
 import com.gamesbykevin.androidframework.resources.Images;
 import com.gamesbykevin.sokoban.assets.Assets;
+import com.gamesbykevin.sokoban.level.Level;
+import com.gamesbykevin.sokoban.level.LevelHelper;
+import com.gamesbykevin.sokoban.level.tile.TileHelper;
+import com.gamesbykevin.sokoban.panel.GamePanel;
 
 /**
  * The player that moves the blocks
  * @author GOD
  */
-public class Player extends Entity implements Disposable
+public class Player extends Entity implements IPlayer
 {
-    //the target for the player
+    //the target for the player when it is moved
     private Cell target;
+    
+    //did the user select the player
+    private boolean selected = false;
+    
+    //speed to move
+    public static final double VELOCITY = 0.1;
+    
+    //the number of moves the player has made
+    public int moves = 0;
     
     /**
      * The different animations for the player
@@ -42,19 +54,19 @@ public class Player extends Entity implements Disposable
         this.target = new Cell();
         
         //delay between each frame
-        final int delay = 250;
+        final int delay = 125;
         
         //our animation object
         Animation animation;
         
         //walk east animation
-        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 120, 42, 59, 2, 1, 2);
+        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 128, 42, 58, 2, 1, 2);
         animation.setDelay(delay);
         animation.setLoop(true);
         getSpritesheet().add(Key.WalkEast, animation);
         
         //walk west animation
-        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 186, 42, 59, 2, 1, 2);
+        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 187, 42, 58, 2, 1, 2);
         animation.setDelay(delay);
         animation.setLoop(true);
         getSpritesheet().add(Key.WalkWest, animation);
@@ -72,11 +84,11 @@ public class Player extends Entity implements Disposable
         getSpritesheet().add(Key.WalkSouth, animation);
         
         //idle facing east animation
-        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 128, 42, 59);
+        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 128, 42, 58);
         getSpritesheet().add(Key.IdleEast, animation);
         
         //idle facing west animation
-        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 186, 42, 59);
+        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 187, 42, 58);
         getSpritesheet().add(Key.IdleWest, animation);
         
         //idle facing north animation
@@ -91,6 +103,65 @@ public class Player extends Entity implements Disposable
         setAnimation(Key.IdleSouth);
     }
     
+    @Override
+    public void reset(final Level level)
+    {
+        //default animation
+        setAnimation(Key.IdleSouth);
+        
+        //player is not selected
+        setSelected(false);
+        
+        //set start location
+        setCol(level.getStart());
+        setRow(level.getStart());
+        
+        //set target
+        setTarget(getCol(), getRow());
+        
+        //reset location
+        updateXY(level);
+        
+        //reset moves back to 0
+        setMoves(0);
+    }
+    
+    /**
+     * Get the moves count
+     * @return The total number of moves
+     */
+    public int getMoves()
+    {
+        return this.moves;
+    }
+    
+    /**
+     * Set the moves
+     * @param moves The moves count
+     */
+    public void setMoves(final int moves)
+    {
+        this.moves = moves;
+    }
+    
+    /**
+     * Is the player selected
+     * @return true=yes, false=no
+     */
+    public boolean isSelected()
+    {
+        return this.selected;
+    }
+    
+    /**
+     * Flag the player as selected
+     * @param selected true=yes, false=no
+     */
+    public void setSelected(final boolean selected)
+    {
+        this.selected = selected;
+    }
+    
     /**
      * Assign the animation
      * @param key The key of the animation we want
@@ -103,6 +174,28 @@ public class Player extends Entity implements Disposable
         //assign the dimensions based on the image dimensions
         super.setWidth(getSpritesheet().get().getImage().getWidth());
         super.setHeight(getSpritesheet().get().getImage().getHeight());
+    }
+    
+    /**
+     * Get the animation
+     * @return The animation of the current key, if not set null is returned
+     */
+    public final Key getAnimation()
+    {
+        if (getSpritesheet().getKey() == null)
+            return null;
+        
+        //return result
+        return (Key)getSpritesheet().getKey();
+    }
+    
+    /**
+     * Do we have the target?
+     * @return true if the player location matches the target location, false otherwise
+     */
+    public boolean hasTarget()
+    {
+        return (getCol() == getTarget().getCol() && getRow() == getTarget().getRow());
     }
     
     /**
@@ -123,5 +216,77 @@ public class Player extends Entity implements Disposable
     {
         this.target.setCol(col);
         this.target.setRow(row);
+    }
+    
+    /**
+     * Update the (x,y) location for the player
+     * @param level The level we are interacting with
+     */
+    public void updateXY(final Level level)
+    {
+        //get start destination
+        final double x = LevelHelper.getX(level, getCol());
+        final double y = LevelHelper.getY(level, getRow());
+
+        //place in the center
+        setX(x + (TileHelper.DEFAULT_DIMENSION / 2) - (getWidth() / 2));
+        setY(y + (TileHelper.DEFAULT_DIMENSION / 2) - (getHeight() / 2));
+    }
+    
+    /**
+     * Update the player
+     * @param level The current level
+     */
+    public void update(final Level level)
+    {
+        if (!hasTarget())
+        {
+            //update the current animation
+            getSpritesheet().get().update();
+
+            //assign appropriate walking animation
+            PlayerHelper.startWalking(this);
+            
+            //else the player can move, so update velocity and (col, row) since we can move
+            PlayerHelper.manageVelocity(this);
+            
+            //if we made it to the target
+            if (hasTarget())
+            {
+                //player is no longer selected
+                setSelected(false);
+                
+                //stop the walking animation
+                PlayerHelper.stopWalking(this);
+            }
+            
+            if (level.canFitWindow())
+            {
+                //update (x,y) render coordinates
+                updateXY(level);
+            }
+            else
+            {
+                //locate middle of screen
+                final int middleX = (GamePanel.WIDTH / 2) - (TileHelper.DEFAULT_DIMENSION / 2);
+                final int middleY = (GamePanel.HEIGHT / 2) - (TileHelper.DEFAULT_DIMENSION / 2);
+                
+                //set the start location (x,y) relative to where the player start is
+                level.setStartLocation(
+                middleX - (int)(getCol() * TileHelper.DEFAULT_DIMENSION), 
+                middleY - (int)(getRow() * TileHelper.DEFAULT_DIMENSION));
+                
+                //update (x,y) render coordinates
+                updateXY(level);
+            }
+        }
+    }
+    
+    @Override
+    public void dispose()
+    {
+        super.dispose();
+        
+        target = null;
     }
 }

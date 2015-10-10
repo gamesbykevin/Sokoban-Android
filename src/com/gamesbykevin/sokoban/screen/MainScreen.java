@@ -106,7 +106,7 @@ public final class MainScreen implements Screen, Disposable
      * Get the paint object
      * @return The object controlling the text on the buttons
      */
-    protected Paint getPaint()
+    public Paint getPaint()
     {
         if (paintButton == null)
         {

@@ -15,6 +15,7 @@ import com.gamesbykevin.sokoban.level.LevelHelper;
 import com.gamesbykevin.sokoban.level.Levels;
 import com.gamesbykevin.sokoban.level.tile.TileHelper;
 import com.gamesbykevin.sokoban.player.Player;
+import com.gamesbykevin.sokoban.player.PlayerHelper;
 import com.gamesbykevin.sokoban.screen.MainScreen;
 
 /**
@@ -53,6 +54,15 @@ public final class Game implements IGame
     }
     
     /**
+     * Get our levels
+     * @return Levels Object container
+     */
+    public Levels getLevels()
+    {
+        return this.levels;
+    }
+    
+    /**
      * Get the main screen object reference
      * @return The main screen object reference
      */
@@ -68,21 +78,17 @@ public final class Game implements IGame
     @Override
     public void reset() throws Exception
     {
-        if (levels == null)
-            levels = new Levels();
-        
-        if (player == null)
+        //create new objects if not exist
+        if (getLevels() == null)
+            levels = new Levels(Assets.TextKey.Levels);
+        if (getPlayer() == null)
             player = new Player();
         
-        //reset to first level
-        levels.reset();
+        //mark as level not selected
+        getLevels().setSelected(false);
         
-        //assign the start location of the player
-        player.setCol(levels.getLevel().getStart());
-        player.setRow(levels.getLevel().getStart());
-        
-        //set the target as the start
-        player.setTarget(player.getCol(), player.getRow());
+        //default to 1st page
+        getLevels().setPage(0);
     }
     
     /**
@@ -95,27 +101,95 @@ public final class Game implements IGame
     }
     
     /**
+     * Get the player
+     * @return The player
+     */
+    public Player getPlayer()
+    {
+        return this.player;
+    }
+    
+    /**
      * Update the game based on the motion event
      * @param event Motion Event
      * @param x (x-coordinate)
      * @param y (y-coordinate)
+     * @throws Exception
      */
-    public void updateMotionEvent(final MotionEvent event, final float x, final float y)
+    public void updateMotionEvent(final MotionEvent event, final float x, final float y) throws Exception
     {
         //only update game if no controller buttons were clicked
         if (!getController().updateMotionEvent(event, x, y))
         {
-            //if the board exists and the action is up
-            if (event.getAction() == MotionEvent.ACTION_UP)
+            if (event.getAction() == MotionEvent.ACTION_DOWN)
             {
-                //set game over state
-                screen.setState(MainScreen.State.GameOver);
+                //only pursue if the user already chose a level
+                if (getLevels().isSelected())
+                {
+                    //check that we haven't selected the player yet
+                    if (!getPlayer().isSelected())
+                    {
+                        //make sure the player is already at the destination before moving again
+                        if (getPlayer().hasTarget())
+                        {
+                            //get the location
+                            final int col = (int)LevelHelper.getCol(getLevels().getLevel(), x);
+                            final int row = (int)LevelHelper.getRow(getLevels().getLevel(), y);
 
-                //set display message
-                screen.getScreenGameover().setMessage("Game Over, You win");
+                            //if the location matches the player, mark selected
+                            if (getPlayer().getCol() == col && getPlayer().getRow() == row)
+                                getPlayer().setSelected(true);
+                        }
+                    }
+                }
+            }
+            else if (event.getAction() == MotionEvent.ACTION_UP)
+            {
+                //only pursue if the user already chose a level
+                if (getLevels().isSelected())
+                {
+                    //make sure we have selected the player
+                    if (getPlayer().isSelected())
+                    {
+                        //make sure the player is already at the destination before moving again
+                        if (getPlayer().hasTarget())
+                        {
+                            //get the location
+                            final int col = (int)LevelHelper.getCol(getLevels().getLevel(), x);
+                            final int row = (int)LevelHelper.getRow(getLevels().getLevel(), y);
+
+                            //diagonal movement is not allowed, as well if the destination is same as current location
+                            if (getPlayer().getCol() != col && getPlayer().getRow() != row || getPlayer().getCol() == col && getPlayer().getRow() == row)
+                            {
+                                //flip flag
+                                getPlayer().setSelected(!getPlayer().isSelected());
+                            }
+                            else
+                            {
+                                //assign the player destination
+                                getPlayer().setTarget(col, row);
+
+                                //calculate the targets
+                                PlayerHelper.calculateTargets(getPlayer(), getLevels().getLevel());
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    //mark the selection
+                    getLevels().setSelected(x, y);
                     
-                //play sound
-                //Audio.play(Assets.AudioKey.GameoverWin);
+                    //if the selection was made
+                    if (getLevels().isSelected())
+                    {
+                        //reset selected level
+                        getLevels().reset();
+
+                        //reset player
+                        getPlayer().reset(getLevels().getLevel());
+                    }
+                }
             }
         }
     }
@@ -126,7 +200,33 @@ public final class Game implements IGame
      */
     public void update() throws Exception
     {
-        
+        //make sure object exists
+        if (getLevels() != null)
+        {
+            //update current level first
+            if (getLevels().getLevel() != null)
+            {
+                if (LevelHelper.hasCompleted(getLevels().getLevel()))
+                {
+                    //set game over state
+                    screen.setState(MainScreen.State.GameOver);
+
+                    //set display message
+                    screen.getScreenGameover().setMessage("Level Complete");
+
+                    //play sound
+                    //Audio.play(Assets.AudioKey.GameoverWin);
+                }
+                else
+                {
+                    getLevels().getLevel().update();
+                }
+            }
+            
+            //if player exists update the player
+            if (getPlayer() != null)
+                getPlayer().update(getLevels().getLevel());
+        }
     }
     
     @Override
@@ -140,6 +240,18 @@ public final class Game implements IGame
         
         if (paint != null)
             paint = null;
+        
+        if (levels != null)
+        {
+            levels.dispose();
+            levels = null;
+        }
+        
+        if (player != null)
+        {
+            player.dispose();
+            player = null;
+        }
     }
     
     /**
@@ -149,25 +261,19 @@ public final class Game implements IGame
      */
     public void render(final Canvas canvas) throws Exception
     {
-        if (levels != null)
-            levels.render(canvas);
-        
-        if (player != null)
+        if (getLevels() != null)
         {
-            //get start destination
-            final double x = LevelHelper.getX(levels.getLevel(), player.getCol());
-            final double y = LevelHelper.getY(levels.getLevel(), player.getRow());
+            //render level/seletions
+            getLevels().render(canvas, screen.getPaint());
             
-            //place in the center
-            player.setX(x + (TileHelper.DEFAULT_DIMENSION / 2) - (player.getWidth() / 2));
-            player.setY(y + (TileHelper.DEFAULT_DIMENSION / 2) - (player.getHeight() / 2));
-            
-            //render player
-            player.render(canvas);
+            if (getLevels().isSelected() && getPlayer() != null && getController() != null)
+            {
+                //render player
+                getPlayer().render(canvas);
+                
+                //draw the game controller
+                getController().render(canvas);
+            }
         }
-        
-        //draw the game controller
-        if (getController() != null)
-            getController().render(canvas);
     }
 }

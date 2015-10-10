@@ -13,6 +13,9 @@ public class Target extends Cell implements Disposable
     //destination location
     private Cell destination;
     
+    //is this target at a goal
+    private boolean goal = false;
+    
     /**
      * Create a new Target with the specified location
      * @param col Column
@@ -30,6 +33,24 @@ public class Target extends Cell implements Disposable
     public void dispose()
     {
         this.destination = null;
+    }
+    
+    /**
+     * Flag this target located at a goal
+     * @param goal true = yes, false = no
+     */
+    public void setGoal(final boolean goal)
+    {
+        this.goal = goal;
+    }
+    
+    /**
+     * Is this target at a goal?
+     * @return true = yes, false = no
+     */
+    public boolean hasGoal()
+    {
+        return this.goal;
     }
     
     /**
@@ -51,5 +72,14 @@ public class Target extends Cell implements Disposable
     public Cell getDestination()
     {
         return this.destination;
+    }
+    
+    /**
+     * Do we have the destination?
+     * @return true if the current location matches the target location, false otherwise
+     */
+    public boolean hasDestination()
+    {
+        return (getCol() == getDestination().getCol() && getRow() == getDestination().getRow());
     }
 }
