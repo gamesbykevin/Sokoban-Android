@@ -134,7 +134,11 @@ public final class MainScreen implements Screen, Disposable
         getScreen(getState()).update();
     }
     
-    protected GamePanel getPanel()
+    /**
+     * Get the game panel
+     * @return Our game panel object reference
+     */
+    public GamePanel getPanel()
     {
         return this.panel;
     }

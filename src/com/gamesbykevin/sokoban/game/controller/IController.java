@@ -16,9 +16,10 @@ public interface IController extends Disposable
      * @param event Motion Event
      * @param x x-coordinate
      * @param y y-coordinate
+     * @throws Exception
      * @return true if motion event was applied, false otherwise
      */
-    public boolean updateMotionEvent(final MotionEvent event, final float x, final float y);
+    public boolean updateMotionEvent(final MotionEvent event, final float x, final float y) throws Exception;
     
     /**
      * Render our controller

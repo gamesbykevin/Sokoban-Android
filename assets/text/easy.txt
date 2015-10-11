@@ -14,6 +14,9 @@ Original level website: http://users.bentonrea.com/~sasquatch/sokoban/
 
 This file downloaded from the Sokoban levels page at http://sneezingtiger.com/sokoban/levels.html.
 
+######
+#@ $.#
+######
 
 Level 1
 ####

@@ -7,6 +7,11 @@ package com.gamesbykevin.sokoban.level.tile;
 public class TileHelper 
 {
     /**
+     * The default dimension of a single animation for a tile
+     */
+    public static final int ANIMATION_DIMENSION = 64;
+    
+    /**
      * The default dimension of a tile
      */
     public static final int DEFAULT_DIMENSION = 64;
@@ -14,7 +19,7 @@ public class TileHelper
     /**
      * The default dimension of the goal
      */
-    public static final int GOAL_DIMENSION = 32;
+    public static final int ANIMATION_GOAL_DIMENSION = 32;
     
     /**
      * Get the sprite sheet coordinate

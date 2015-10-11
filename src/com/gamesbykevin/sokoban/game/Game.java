@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.os.SystemClock;
 import android.view.MotionEvent;
 
+import com.gamesbykevin.androidframework.io.storage.Internal;
 import com.gamesbykevin.androidframework.resources.Audio;
 import com.gamesbykevin.androidframework.resources.Disposable;
 
@@ -39,6 +40,19 @@ public final class Game implements IGame
     //our player
     private Player player;
     
+    //our storage object used to save data
+    private Internal storage;
+    
+    /**
+     * Text delimeter used to parse internal storage data for each level
+     */
+    private static final String STORAGE_DELIMITER_LEVEL = ",";
+    
+    /**
+     * Text delimeter used to parse internal storage data for each attribute in a level
+     */
+    private static final String STORAGE_DELIMITER_ATTRIBUTE = ";";
+    
     public Game(final MainScreen screen) throws Exception
     {
         //our main screen object reference
@@ -51,6 +65,9 @@ public final class Game implements IGame
         
         //create new controller
         this.controller = new Controller(this);
+        
+        //create our storage object
+        this.storage = new Internal("test" , screen.getPanel().getActivity());
     }
     
     /**
@@ -80,7 +97,13 @@ public final class Game implements IGame
     {
         //create new objects if not exist
         if (getLevels() == null)
-            levels = new Levels(Assets.TextKey.Levels);
+        {
+            //create new levels object
+            levels = new Levels(Assets.TextKey.LevelsEasy);
+            
+            //load storage data into level trackers
+            updateTrackers();
+        }
         if (getPlayer() == null)
             player = new Player();
         
@@ -110,6 +133,94 @@ public final class Game implements IGame
     }
     
     /**
+     * Update the level trackers.<br>
+     * We will check our storage and update the status of the trackers
+     */
+    public void updateTrackers()
+    {
+        //only update if storage data exists
+        if (getStorage().getContent().length() > 0)
+        {
+            //parse levels
+            final String[] content = getStorage().getContent().toString().split(STORAGE_DELIMITER_LEVEL);
+            
+            //loop through each value
+            for (String tmp : content)
+            {
+                //separate the attributes
+                final String[] attributes = tmp.split(STORAGE_DELIMITER_ATTRIBUTE);
+                
+                try
+                {
+                    //parse index location
+                    int i = Integer.parseInt(attributes[0]);
+                    
+                    //get that tracker and flag completed
+                    getLevels().getLevelTracker(i).setCompleted(true);
+                    
+                    //parse attributes
+                    final int moves = Integer.parseInt(attributes[1]);
+                    final long time = Long.parseLong(attributes[2]);
+                    
+                    //load attributes
+                    getLevels().getLevelTracker(i).setMoves(moves);
+                    getLevels().getLevelTracker(i).setTime(time);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    /**
+     * Update the internal storage.<br>
+     * We will update the content of the storage with the current list of completed levels
+     */
+    public void updateStorage()
+    {
+        //remove all contents
+        getStorage().getContent().delete(0, getStorage().getContent().length());
+        
+        //check each level tracker
+        for (int i = 0; i < getLevels().getLevelTrackers().size(); i++)
+        {
+            if (getLevels().getLevelTracker(i).isCompleted())
+            {
+                //update personal best info
+                if (player.getTime() < getLevels().getLevelTracker(i).getTime())
+                    getLevels().getLevelTracker(i).setTime(player.getTime());
+                if (player.getMoves() < getLevels().getLevelTracker(i).getMoves())
+                    getLevels().getLevelTracker(i).setMoves(player.getMoves());
+                
+                //if content already exists, separate with delimeter
+                if (getStorage().getContent().length() > 0)
+                    getStorage().getContent().append(STORAGE_DELIMITER_LEVEL);
+                
+                //add data content to string builder
+                getStorage().getContent().append(i);
+                getStorage().getContent().append(STORAGE_DELIMITER_ATTRIBUTE);
+                getStorage().getContent().append(getLevels().getLevelTracker(i).getMoves());
+                getStorage().getContent().append(STORAGE_DELIMITER_ATTRIBUTE);
+                getStorage().getContent().append(getLevels().getLevelTracker(i).getTime());
+            }
+        }
+        
+        //save data to storage
+        getStorage().save();
+    }
+    
+    /**
+     * Get storage
+     * @return Our internal storage object reference
+     */
+    private Internal getStorage()
+    {
+        return this.storage;
+    }
+    
+    /**
      * Update the game based on the motion event
      * @param event Motion Event
      * @param x (x-coordinate)
@@ -118,13 +229,30 @@ public final class Game implements IGame
      */
     public void updateMotionEvent(final MotionEvent event, final float x, final float y) throws Exception
     {
-        //only update game if no controller buttons were clicked
-        if (!getController().updateMotionEvent(event, x, y))
+        if (!getLevels().isSelected())
         {
-            if (event.getAction() == MotionEvent.ACTION_DOWN)
+            if (event.getAction() == MotionEvent.ACTION_UP)
             {
-                //only pursue if the user already chose a level
+                //mark the selection
+                getLevels().setSelected(x, y);
+
+                //if the selection was made
                 if (getLevels().isSelected())
+                {
+                    //reset selected level
+                    getLevels().reset();
+
+                    //reset player
+                    getPlayer().reset(getLevels().getLevel());
+                }
+            }
+        }
+        else
+        {
+            //only update game if no controller buttons were clicked
+            if (!getController().updateMotionEvent(event, x, y))
+            {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
                 {
                     //check that we haven't selected the player yet
                     if (!getPlayer().isSelected())
@@ -142,11 +270,7 @@ public final class Game implements IGame
                         }
                     }
                 }
-            }
-            else if (event.getAction() == MotionEvent.ACTION_UP)
-            {
-                //only pursue if the user already chose a level
-                if (getLevels().isSelected())
+                else if (event.getAction() == MotionEvent.ACTION_UP)
                 {
                     //make sure we have selected the player
                     if (getPlayer().isSelected())
@@ -175,21 +299,6 @@ public final class Game implements IGame
                         }
                     }
                 }
-                else
-                {
-                    //mark the selection
-                    getLevels().setSelected(x, y);
-                    
-                    //if the selection was made
-                    if (getLevels().isSelected())
-                    {
-                        //reset selected level
-                        getLevels().reset();
-
-                        //reset player
-                        getPlayer().reset(getLevels().getLevel());
-                    }
-                }
             }
         }
     }
@@ -203,29 +312,49 @@ public final class Game implements IGame
         //make sure object exists
         if (getLevels() != null)
         {
-            //update current level first
-            if (getLevels().getLevel() != null)
+            //make sure we have a level selection before updating
+            if (getLevels().isSelected())
             {
-                if (LevelHelper.hasCompleted(getLevels().getLevel()))
+                //update current level first
+                if (getLevels().getLevel() != null)
                 {
-                    //set game over state
-                    screen.setState(MainScreen.State.GameOver);
+                    if (LevelHelper.hasCompleted(getLevels().getLevel()))
+                    {
+                        //if wasn't completed previously, store best stats
+                        if (!getLevels().getLevelTracker().isCompleted())
+                        {
+                            getLevels().getLevelTracker().setMoves(player.getMoves());
+                            getLevels().getLevelTracker().setTime(player.getTime());
+                        }
+                        
+                        //mark completed
+                        getLevels().getLevelTracker().setCompleted(true);
+                        
+                        //save information to internal storage
+                        updateStorage();
+                        
+                        //set game over state
+                        screen.setState(MainScreen.State.GameOver);
 
-                    //set display message
-                    screen.getScreenGameover().setMessage("Level Complete");
+                        //set display message
+                        screen.getScreenGameover().setMessage("Level Complete");
 
-                    //play sound
-                    //Audio.play(Assets.AudioKey.GameoverWin);
+                        //play sound
+                        //Audio.play(Assets.AudioKey.GameoverWin);
+                        
+                        //no need to continue
+                        return;
+                    }
+                    else
+                    {
+                        getLevels().getLevel().update();
+                    }
                 }
-                else
-                {
-                    getLevels().getLevel().update();
-                }
+
+                //if player exists update the player
+                if (getPlayer() != null)
+                    getPlayer().update(getLevels().getLevel());
             }
-            
-            //if player exists update the player
-            if (getPlayer() != null)
-                getPlayer().update(getLevels().getLevel());
         }
     }
     
@@ -266,10 +395,18 @@ public final class Game implements IGame
             //render level/seletions
             getLevels().render(canvas, screen.getPaint());
             
+            //make sure object exists
             if (getLevels().isSelected() && getPlayer() != null && getController() != null)
             {
+                //if level was completed previously, display personal best
+                if (getLevels().getLevelTracker().isCompleted())
+                {
+                    canvas.drawText("PB: " + getLevels().getLevelTracker().getMoves(), Player.PERSONAL_BEST_INFO_X, Player.PERSONAL_BEST_INFO_Y, screen.getPaint());
+                    canvas.drawText("PB: " + PlayerHelper.getTimeDescription(getLevels().getLevelTracker().getTime()), Player.PERSONAL_BEST_INFO_X, Player.PERSONAL_BEST_INFO_Y * 2, screen.getPaint());
+                }
+                
                 //render player
-                getPlayer().render(canvas);
+                getPlayer().render(canvas, screen.getPaint());
                 
                 //draw the game controller
                 getController().render(canvas);

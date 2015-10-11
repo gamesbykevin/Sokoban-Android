@@ -25,7 +25,7 @@ public final class Goal extends Tile
     
     public final void setAnimation(final Style style)
     {
-        int x = 0, y = 384, d = TileHelper.GOAL_DIMENSION;
+        int x = 0, y = 384, d = TileHelper.ANIMATION_GOAL_DIMENSION;
         
         //set dimensions
         super.setWidth(d);
@@ -34,35 +34,35 @@ public final class Goal extends Tile
         switch (style)
         {
             case Brown:
-                x = (0 * TileHelper.GOAL_DIMENSION);
+                x = (0 * TileHelper.ANIMATION_GOAL_DIMENSION);
                 break;
                 
             case Beige:
-                x = (1 * TileHelper.GOAL_DIMENSION);
+                x = (1 * TileHelper.ANIMATION_GOAL_DIMENSION);
                 break;
                 
             case Gray:
-                x = (2 * TileHelper.GOAL_DIMENSION);
+                x = (2 * TileHelper.ANIMATION_GOAL_DIMENSION);
                 break;
                 
             case Purple:
-                x = (3 * TileHelper.GOAL_DIMENSION);
+                x = (3 * TileHelper.ANIMATION_GOAL_DIMENSION);
                 break;
                 
             case Blue:
-                x = (4 * TileHelper.GOAL_DIMENSION);
+                x = (4 * TileHelper.ANIMATION_GOAL_DIMENSION);
                 break;
                 
             case Black:
-                x = (5 * TileHelper.GOAL_DIMENSION);
+                x = (5 * TileHelper.ANIMATION_GOAL_DIMENSION);
                 break;
                 
             case Red:
-                x = (6 * TileHelper.GOAL_DIMENSION);
+                x = (6 * TileHelper.ANIMATION_GOAL_DIMENSION);
                 break;
                 
             case Yellow:
-                x = (7 * TileHelper.GOAL_DIMENSION);
+                x = (7 * TileHelper.ANIMATION_GOAL_DIMENSION);
                 break;
         }
         

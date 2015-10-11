@@ -30,9 +30,9 @@ public class Controller implements IController
     //our game object reference
     private final Game game;
     
-    //location of joystick
-    private final static int CONTROLLER_X = 100;
-    private final static int CONTROLLER_Y = 50;
+    //location of reset button
+    private final static int RESET_X = GamePanel.WIDTH - 64;
+    private final static int RESET_Y = 0;
     
     /**
      * Default Constructor
@@ -49,7 +49,7 @@ public class Controller implements IController
         tmp.add(Assets.ImageKey.MenuSoundOn);
         tmp.add(Assets.ImageKey.MenuPause);
         tmp.add(Assets.ImageKey.MenuExit);
-        tmp.add(Assets.ImageKey.Controller);
+        tmp.add(Assets.ImageKey.MenuReset);
         
         //create new list of buttons
         this.buttons = new HashMap<Assets.ImageKey, Button>();
@@ -60,11 +60,12 @@ public class Controller implements IController
             this.buttons.put(key, new Button(Images.getImage(key)));
         }
         
-        this.buttons.get(Assets.ImageKey.Controller).setX(CONTROLLER_X);
-        this.buttons.get(Assets.ImageKey.Controller).setY(CONTROLLER_Y);
+        //reset button
+        this.buttons.get(Assets.ImageKey.MenuReset).setX(RESET_X);
+        this.buttons.get(Assets.ImageKey.MenuReset).setY(RESET_Y);
         
         int x = 100;
-        final int y = 675;
+        final int y = 710;
         final int incrementX = 100;
         
         this.buttons.get(Assets.ImageKey.MenuSoundOff).setX(x);
@@ -103,7 +104,7 @@ public class Controller implements IController
      * @param y (y-coordinate)
      * @return true if motion event was applied, false otherwise
      */
-    public boolean updateMotionEvent(final MotionEvent event, final float x, final float y)
+    public boolean updateMotionEvent(final MotionEvent event, final float x, final float y) throws Exception
     {
         //check if the touch screen was released
         if (event.getAction() == MotionEvent.ACTION_UP)
@@ -145,9 +146,13 @@ public class Controller implements IController
                 //event was applied
                 return true;
             }
-            else if (buttons.get(Assets.ImageKey.Controller).contains(x, y))
+            else if  (buttons.get(Assets.ImageKey.MenuReset).contains(x, y))
             {
+                //reset level
+                getGame().getLevels().reset();
                 
+                //reset the player as well
+                getGame().getPlayer().reset(getGame().getLevels().getLevel());
             }
         }
         
@@ -191,7 +196,7 @@ public class Controller implements IController
             buttons.get(Audio.isAudioEnabled() ? Assets.ImageKey.MenuSoundOn : Assets.ImageKey.MenuSoundOff).render(canvas);
             buttons.get(Assets.ImageKey.MenuPause).render(canvas);
             buttons.get(Assets.ImageKey.MenuExit).render(canvas);
-            //buttons.get(Assets.ImageKey.Controller).render(canvas);
+            buttons.get(Assets.ImageKey.MenuReset).render(canvas);
         }
     }
 }

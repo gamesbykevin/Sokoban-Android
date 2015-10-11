@@ -36,7 +36,7 @@ public class GameoverScreen implements Screen, Disposable
     private int pixelW;
     
     //buttons
-    private Button nextLevel, mainmenu, rateapp, exitgame;
+    private Button nextLevel, replayLevel, mainmenu, rateapp, exitgame;
     
     //time we have displayed text
     private long time;
@@ -65,6 +65,11 @@ public class GameoverScreen implements Screen, Disposable
     private static final String BUTTON_TEXT_NEW_GAME = "Next Level";
     
     /**
+     * The text to display to replay the new game
+     */
+    private static final String BUTTON_TEXT_REPLAY = "Replay";
+    
+    /**
      * The text to display for the menu
      */
     private static final String BUTTON_TEXT_MENU = "Menu";
@@ -86,6 +91,14 @@ public class GameoverScreen implements Screen, Disposable
         this.nextLevel.updateBounds();
         this.nextLevel.setText(BUTTON_TEXT_NEW_GAME);
         this.nextLevel.positionText(screen.getPaint());
+        
+        y+= addY;
+        this.replayLevel = new Button(Images.getImage(Assets.ImageKey.Button));
+        this.replayLevel.setX(x);
+        this.replayLevel.setY(y);
+        this.replayLevel.updateBounds();
+        this.replayLevel.setText(BUTTON_TEXT_REPLAY);
+        this.replayLevel.positionText(screen.getPaint());
         
         y += addY;
         this.mainmenu = new Button(Images.getImage(Assets.ImageKey.Button));
@@ -182,6 +195,17 @@ public class GameoverScreen implements Screen, Disposable
                 //position player at start of next level
                 screen.getScreenGame().getGame().getPlayer().reset(screen.getScreenGame().getGame().getLevels().getLevel());
             }
+            else if (replayLevel.contains(x, y))
+            {
+                //move back to the game
+                screen.setState(MainScreen.State.Running);
+                
+                //reset level
+                screen.getScreenGame().getGame().getLevels().reset();
+                
+                //position player at start of level
+                screen.getScreenGame().getGame().getPlayer().reset(screen.getScreenGame().getGame().getLevels().getLevel());
+            }
             else if (mainmenu.contains(x, y))
             {
                 //stop sound
@@ -263,6 +287,7 @@ public class GameoverScreen implements Screen, Disposable
         {
             //render buttons
             nextLevel.render(canvas, screen.getPaint());
+            replayLevel.render(canvas, screen.getPaint());
             rateapp.render(canvas, screen.getPaint());
             mainmenu.render(canvas, screen.getPaint());
             exitgame.render(canvas, screen.getPaint());
@@ -279,6 +304,12 @@ public class GameoverScreen implements Screen, Disposable
         {
             nextLevel.dispose();
             nextLevel = null;
+        }
+        
+        if (replayLevel != null)
+        {
+            replayLevel.dispose();
+            replayLevel = null;
         }
         
         if (mainmenu != null)

@@ -37,7 +37,7 @@ public final class Block extends Tile
     
     public final void setAnimation(final Style style)
     {
-        int x, y, d = TileHelper.DEFAULT_DIMENSION;
+        int x, y, d = TileHelper.ANIMATION_DIMENSION;
         
         //set dimensions
         super.setWidth(d);

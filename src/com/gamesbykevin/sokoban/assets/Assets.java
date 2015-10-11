@@ -47,8 +47,8 @@ public class Assets
     {
         Background,
         Button,
-        Controller, 
-        LevelIcon, 
+        LevelIconComplete,
+        LevelIconIncomplete, 
         LevelNext,
         LevelPrevious, 
         Logo,
@@ -68,7 +68,8 @@ public class Assets
      */
     public enum TextKey
     {
-        Levels
+        LevelsEasy,
+        
     }
     
     /**

@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.gamesbykevin.androidframework.awt.Button;
+import com.gamesbykevin.androidframework.io.storage.Internal;
 import com.gamesbykevin.androidframework.resources.Files;
 import com.gamesbykevin.androidframework.resources.Images;
 
@@ -38,18 +39,25 @@ public final class Levels implements ILevels
     private final Assets.TextKey key;
     
     //the dimensions of the level select buttons
-    private final static int COLS = 3;
-    private final static int ROWS = 5;
+    private final static int COLS = 5;
+    private final static int ROWS = 7;
     
     //did the user choose a level to start?
     private boolean selected = false;
     
     //the buttons
-    private Button levelIcon, levelPrevious, levelNext;
+    private Button levelIconIncomplete, levelIconComplete, levelPrevious, levelNext;
     
     //the location of the first level select icon
-    private static final int LEVEL_SELECT_START_X = 64;
-    private static final int LEVEL_SELECT_START_Y = 64;
+    private static final int LEVEL_SELECT_START_X = 16;
+    private static final int LEVEL_SELECT_START_Y = 32;
+    
+    //the location where we display text when seleting level
+    private static final int LEVEL_START_TEXT_X = 176;
+    private static final int LEVEL_START_TEXT_Y = 736;
+    
+    //text to select the level
+    private static final String LEVEL_START_TEXT = "Select Level";
     
     //the current page number for the level select
     private int page = 0;
@@ -71,9 +79,20 @@ public final class Levels implements ILevels
         this.trackers = new ArrayList<Tracker>();
         
         //create buttons
-        this.levelIcon = new Button(Images.getImage(Assets.ImageKey.LevelIcon));
+        this.levelIconIncomplete = new Button(Images.getImage(Assets.ImageKey.LevelIconIncomplete));
+        this.levelIconComplete = new Button(Images.getImage(Assets.ImageKey.LevelIconComplete));
+        
+        //next page button
         this.levelNext = new Button(Images.getImage(Assets.ImageKey.LevelNext));
+        this.levelNext.setX(getLevelIconX(COLS - 1));
+        this.levelNext.setY(getLevelIconY(ROWS));
+        this.levelNext.updateBounds();
+        
+        //previous page button
         this.levelPrevious = new Button(Images.getImage(Assets.ImageKey.LevelPrevious));
+        this.levelPrevious.setX(getLevelIconX(0));
+        this.levelPrevious.setY(getLevelIconY(ROWS));
+        this.levelPrevious.updateBounds();
         
         //did we find the first line
         boolean start = false;
@@ -90,8 +109,8 @@ public final class Levels implements ILevels
             //get the current line
             String line = Files.getText(getKey()).getLines().get(i);
             
-            //each line in a level will have a wall somewhere
-            if (line.contains(Level.KEY_WALL))
+            //each line in a level will have a wall somewhere, and make sure not at last line
+            if (line.contains(Level.KEY_WALL) && i < Files.getText(getKey()).getLines().size() - 1)
             {
                 //store the column width
                 if (line.length() > length)
@@ -109,8 +128,16 @@ public final class Levels implements ILevels
                 //if we already started, we reached the end of the level
                 if (start)
                 {
-                    //add the info for this level
-                    this.trackers.add(new Tracker(lineStart, i - 1, length));
+                    if (i == Files.getText(getKey()).getLines().size() - 1)
+                    {
+                        //add the info for this level
+                        this.trackers.add(new Tracker(lineStart, i, length));
+                    }
+                    else
+                    {
+                        //add the info for this level
+                        this.trackers.add(new Tracker(lineStart, i - 1, length));
+                    }
                     
                     //unflag start
                     start = false;
@@ -147,6 +174,12 @@ public final class Levels implements ILevels
             setPage(0);
         if (getPage() < 0)
             setPage(pageMax);
+        
+        //if at first page, we won't show previous button
+        levelPrevious.setVisible(getPage() != 0);
+        
+        //if at last page, we won't show next button
+        levelNext.setVisible(getPage() != pageMax);
     }
     
     /**
@@ -186,16 +219,16 @@ public final class Levels implements ILevels
                 //exit if at the end
                 if (i >= trackers.size())
                     break;
-                
+                        
                 //assign the current location
-                levelIcon.setX(LEVEL_SELECT_START_X + (levelIcon.getWidth() * col));
-                levelIcon.setY(LEVEL_SELECT_START_X + (levelIcon.getHeight() * row));
+                levelIconIncomplete.setX(getLevelIconX(col));
+                levelIconIncomplete.setY(getLevelIconY(row));
                 
                 //update the boundary
-                levelIcon.updateBounds();
+                levelIconIncomplete.updateBounds();
                 
                 //if the user clicked here, we will se the level
-                if (levelIcon.getBounds().contains((int)x, (int)y))
+                if (levelIconIncomplete.getBounds().contains((int)x, (int)y))
                 {
                     //mark level selected
                     setSelected(true);
@@ -212,18 +245,10 @@ public final class Levels implements ILevels
             }
         }
         
-        //level change buttons
-        levelNext.setX(LEVEL_SELECT_START_X + (levelNext.getWidth() * (COLS - 1)));
-        levelNext.setY(LEVEL_SELECT_START_Y + (levelNext.getHeight() * (ROWS + 2)));
-        levelNext.updateBounds();
-        levelPrevious.setX(LEVEL_SELECT_START_X + (levelPrevious.getWidth() * 0));
-        levelPrevious.setY(LEVEL_SELECT_START_Y + (levelPrevious.getHeight() * (ROWS + 2)));
-        levelPrevious.updateBounds();
-        
         //change page #'s if the buttons were hit
-        if (levelNext.getBounds().contains((int)x, (int)y))
+        if (levelNext.isVisible() && levelNext.getBounds().contains((int)x, (int)y))
             setPage(getPage() + 1);
-        if (levelPrevious.getBounds().contains((int)x, (int)y))
+        if (levelPrevious.isVisible() && levelPrevious.getBounds().contains((int)x, (int)y))
             setPage(getPage() - 1);
     }
     
@@ -265,9 +290,28 @@ public final class Levels implements ILevels
      * Get the level tracker of the current level
      * @return Object containing level info
      */
-    private Tracker getLevelTracker()
+    public Tracker getLevelTracker()
     {
-        return trackers.get(getIndex());
+        return getLevelTracker(getIndex());
+    }
+    
+    /**
+     * Get the level tracker of the current level
+     * @param index The index location of the desired level
+     * @return Object containing level info
+     */
+    public Tracker getLevelTracker(final int index)
+    {
+        return trackers.get(index);
+    }
+    
+    /**
+     * Get the level trackers
+     * @return The level trackers of all levels
+     */
+    public List<Tracker> getLevelTrackers()
+    {
+        return this.trackers;
     }
     
     /**
@@ -279,14 +323,12 @@ public final class Levels implements ILevels
         //create new level
         this.level = new Level(getLevelTracker());
         
-        //get the level tracker info
-        final int lineStart = trackers.get(getIndex()).getLineStart();
-        final int lineEnd = trackers.get(getIndex()).getLineEnd();
+        //get the size from the level tracker info
         final int cols = trackers.get(getIndex()).getCols();
         final int rows = trackers.get(getIndex()).getRows();
         
         //now load each line into the level
-        for (int i = lineStart; i <= lineEnd; i++)
+        for (int i = trackers.get(getIndex()).getLineStart(); i <= trackers.get(getIndex()).getLineEnd(); i++)
         {
             this.level.load(Files.getText(getKey()).getLines().get(i));
         }
@@ -351,10 +393,16 @@ public final class Levels implements ILevels
             trackers = null;
         }
         
-        if (levelIcon != null)
+        if (levelIconIncomplete != null)
         {
-            levelIcon.dispose();
-            levelIcon = null;
+            levelIconIncomplete.dispose();
+            levelIconIncomplete = null;
+        }
+        
+        if (levelIconComplete != null)
+        {
+            levelIconComplete.dispose();
+            levelIconComplete = null;
         }
         
         if (levelPrevious != null)
@@ -395,6 +443,16 @@ public final class Levels implements ILevels
         createLevel();
     }
     
+    private int getLevelIconX(final int col)
+    {
+        return LEVEL_SELECT_START_X + (int)((levelIconIncomplete.getWidth() * 1.5) * col);
+    }
+    
+    private int getLevelIconY(final int row)
+    {
+        return LEVEL_SELECT_START_Y + (int)((levelIconIncomplete.getHeight() * 1.5) * row);
+    }
+    
     /**
      * Render the level
      * @param canvas Object where we write pixel data
@@ -407,8 +465,11 @@ public final class Levels implements ILevels
         //if a level has already been selected, render the level
         if (isSelected())
         {
-            //render the level
-            getLevel().render(canvas, tiles);
+            if (getLevel() != null)
+            {
+                //render the level
+                getLevel().render(canvas, tiles);
+            }
         }
         else
         {
@@ -424,18 +485,37 @@ public final class Levels implements ILevels
                     if (i >= trackers.size())
                         break;
 
-                    //assign the current location
-                    levelIcon.setX(LEVEL_SELECT_START_X + (levelIcon.getWidth() * col));
-                    levelIcon.setY(LEVEL_SELECT_START_X + (levelIcon.getHeight() * row));
-                    
-                    //set the # text
-                    levelIcon.setText((i + 1) + "");
-                    
-                    //center text in middle
-                    levelIcon.positionText(paint);
-                    
-                    //render button
-                    levelIcon.render(canvas, paint);
+                    //check if a level has already been completed
+                    if (!trackers.get(i).isCompleted())
+                    {
+                        //assign the current location
+                        levelIconIncomplete.setX(getLevelIconX(col));
+                        levelIconIncomplete.setY(getLevelIconY(row));
+
+                        //set the # text
+                        levelIconIncomplete.setText((i + 1) + "");
+
+                        //center text in middle
+                        levelIconIncomplete.positionText(paint);
+
+                        //render button
+                        levelIconIncomplete.render(canvas, paint);
+                    }
+                    else
+                    {
+                        //assign the current location
+                        levelIconComplete.setX(getLevelIconX(col));
+                        levelIconComplete.setY(getLevelIconY(row));
+
+                        //set the # text
+                        levelIconComplete.setText((i + 1) + "");
+
+                        //center text in middle
+                        levelIconComplete.positionText(paint);
+
+                        //render button
+                        levelIconComplete.render(canvas, paint);
+                    }
                     
                     //increase index
                     i++;
@@ -445,6 +525,9 @@ public final class Levels implements ILevels
             //render the next level buttons
             this.levelNext.render(canvas);
             this.levelPrevious.render(canvas);
+            
+            //draw custom text
+            canvas.drawText(LEVEL_START_TEXT, LEVEL_START_TEXT_X, LEVEL_START_TEXT_Y, paint);
         }
     }
 }

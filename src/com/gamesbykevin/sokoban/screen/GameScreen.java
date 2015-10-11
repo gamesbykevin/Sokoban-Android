@@ -48,7 +48,7 @@ public class GameScreen implements Screen, Disposable
     @Override
     public void reset()
     {
-        
+        //anything need to be reset here
     }
     
     @Override

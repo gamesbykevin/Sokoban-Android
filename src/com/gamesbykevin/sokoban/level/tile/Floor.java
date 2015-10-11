@@ -27,7 +27,7 @@ public final class Floor extends Tile
     
     public final void setAnimation(final Style style)
     {
-        int x = 0, y = 0, d = TileHelper.DEFAULT_DIMENSION;
+        int x = 0, y = 0, d = TileHelper.ANIMATION_DIMENSION;
         
         //set dimensions
         super.setWidth(d);

@@ -1,11 +1,13 @@
 package com.gamesbykevin.sokoban.player;
 
 import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import com.gamesbykevin.androidframework.anim.Animation;
 import com.gamesbykevin.androidframework.base.Cell;
 import com.gamesbykevin.androidframework.base.Entity;
 import com.gamesbykevin.androidframework.resources.Images;
+
 import com.gamesbykevin.sokoban.assets.Assets;
 import com.gamesbykevin.sokoban.level.Level;
 import com.gamesbykevin.sokoban.level.LevelHelper;
@@ -44,6 +46,35 @@ public class Player extends Entity implements IPlayer
         IdleNorth,
         IdleSouth
     }
+    
+    //track the time (milliseconds)
+    private long totalTime = 0L;
+    
+    //track the previous time (milliseconds)
+    private long previousTime = 0L;
+    
+    //do we stop the timer
+    private boolean stopTimer = true;
+    
+    /**
+     * Location where player stat's are rendered
+     */
+    public static final int INFO_X = 5;
+    
+    /**
+     * Location where player stats are rendered
+     */
+    public static final int INFO_Y = 25;
+    
+    /**
+     * Location where a player's personal best stats are rendered
+     */
+    public static final int PERSONAL_BEST_INFO_X = 185;
+    
+    /**
+     * Location where a player's personal best stats are rendered
+     */
+    public static final int PERSONAL_BEST_INFO_Y = 25;
     
     /**
      * Create a new player
@@ -103,6 +134,14 @@ public class Player extends Entity implements IPlayer
         setAnimation(Key.IdleSouth);
     }
     
+    /**
+     * Stop the timer
+     */
+    public void stopTimer()
+    {
+        this.stopTimer = true;
+    }
+    
     @Override
     public void reset(final Level level)
     {
@@ -124,6 +163,20 @@ public class Player extends Entity implements IPlayer
         
         //reset moves back to 0
         setMoves(0);
+        
+        //reset timer
+        stopTimer();
+        this.totalTime = 0;
+        
+    }
+    
+    /**
+     * Get the time
+     * @return The total time elapsed
+     */
+    public long getTime()
+    {
+        return this.totalTime;
     }
     
     /**
@@ -239,6 +292,22 @@ public class Player extends Entity implements IPlayer
      */
     public void update(final Level level)
     {
+        //if we stopped the timer, record the previous time
+        if (this.stopTimer)
+        {
+            this.stopTimer = false;
+            this.previousTime = System.currentTimeMillis();
+        }
+        
+        //get the current time
+        final long current = System.currentTimeMillis();
+        
+        //add the difference to the total time
+        this.totalTime += (current - previousTime);
+        
+        //update the previous
+        this.previousTime = current;
+        
         if (!hasTarget())
         {
             //update the current animation
@@ -288,5 +357,18 @@ public class Player extends Entity implements IPlayer
         super.dispose();
         
         target = null;
+    }
+    
+    @Override
+    public void render(final Canvas canvas, final Paint paint) throws Exception
+    {
+        //render player animation
+        super.render(canvas);
+        
+        //render current move count
+        canvas.drawText("" + getMoves(), INFO_X, INFO_Y, paint);
+        
+        //draw timer
+        canvas.drawText(PlayerHelper.getTimeDescription(totalTime), INFO_X, INFO_Y * 2, paint);
     }
 }
