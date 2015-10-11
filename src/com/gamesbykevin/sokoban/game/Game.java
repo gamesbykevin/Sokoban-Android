@@ -3,12 +3,10 @@ package com.gamesbykevin.sokoban.game;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.SystemClock;
 import android.view.MotionEvent;
 
 import com.gamesbykevin.androidframework.io.storage.Internal;
 import com.gamesbykevin.androidframework.resources.Audio;
-import com.gamesbykevin.androidframework.resources.Disposable;
 
 import com.gamesbykevin.sokoban.assets.Assets;
 import com.gamesbykevin.sokoban.game.controller.Controller;
@@ -65,9 +63,6 @@ public final class Game implements IGame
         
         //create new controller
         this.controller = new Controller(this);
-        
-        //create our storage object
-        this.storage = new Internal("test" , screen.getPanel().getActivity());
     }
     
     /**
@@ -93,17 +88,17 @@ public final class Game implements IGame
      * @throws Exception 
      */
     @Override
-    public void reset() throws Exception
+    public void reset(final Assets.TextKey key) throws Exception
     {
-        //create new objects if not exist
-        if (getLevels() == null)
-        {
-            //create new levels object
-            levels = new Levels(Assets.TextKey.LevelsEasy);
-            
-            //load storage data into level trackers
-            updateTrackers();
-        }
+        //create new levels object
+        this.levels = new Levels(key);
+
+        //create our storage object
+        this.storage = new Internal(key.toString(), screen.getPanel().getActivity());
+        
+        //load storage data into level trackers
+        updateTrackers();
+        
         if (getPlayer() == null)
             player = new Player();
         
@@ -381,6 +376,9 @@ public final class Game implements IGame
             player.dispose();
             player = null;
         }
+        
+        if (storage != null)
+            storage = null;
     }
     
     /**
@@ -401,8 +399,8 @@ public final class Game implements IGame
                 //if level was completed previously, display personal best
                 if (getLevels().getLevelTracker().isCompleted())
                 {
-                    canvas.drawText("PB: " + getLevels().getLevelTracker().getMoves(), Player.PERSONAL_BEST_INFO_X, Player.PERSONAL_BEST_INFO_Y, screen.getPaint());
-                    canvas.drawText("PB: " + PlayerHelper.getTimeDescription(getLevels().getLevelTracker().getTime()), Player.PERSONAL_BEST_INFO_X, Player.PERSONAL_BEST_INFO_Y * 2, screen.getPaint());
+                    canvas.drawText("Best: " + getLevels().getLevelTracker().getMoves(), Player.PERSONAL_BEST_INFO_X, Player.PERSONAL_BEST_INFO_Y, screen.getPaint());
+                    canvas.drawText("Best: " + PlayerHelper.getTimeDescription(getLevels().getLevelTracker().getTime()), Player.PERSONAL_BEST_INFO_X, Player.PERSONAL_BEST_INFO_Y * 2, screen.getPaint());
                 }
                 
                 //render player

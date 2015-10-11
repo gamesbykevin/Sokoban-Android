@@ -1,9 +1,7 @@
 package com.gamesbykevin.sokoban.player;
 
 import com.gamesbykevin.sokoban.level.Level;
-import com.gamesbykevin.sokoban.level.tile.Tile;
 import com.gamesbykevin.sokoban.level.tile.TileHelper;
-import com.gamesbykevin.sokoban.target.Target;
 
 /**
  * Player helper methods

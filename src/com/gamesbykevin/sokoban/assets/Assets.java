@@ -69,7 +69,7 @@ public class Assets
     public enum TextKey
     {
         LevelsEasy,
-        
+        LevelsHard,
     }
     
     /**

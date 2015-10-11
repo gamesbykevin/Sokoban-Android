@@ -39,7 +39,7 @@ public class GameScreen implements Screen, Disposable
             this.game = new Game(screen);
         
         //reset the game
-        getGame().reset();
+        getGame().reset(Assets.TextKey.values()[screen.getScreenOptions().getIndexDifficulty()]);
     }
     
     /**

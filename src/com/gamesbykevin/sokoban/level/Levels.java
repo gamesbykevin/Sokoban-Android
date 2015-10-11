@@ -72,6 +72,9 @@ public final class Levels implements ILevels
         //store text key
         this.key = key;
         
+        //current level is null
+        this.level = null;
+        
         //create new list of tiles
         this.tiles = new HashMap<Tile.Type, Tile>();
         

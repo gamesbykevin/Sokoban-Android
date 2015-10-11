@@ -29,6 +29,12 @@ public class OptionsScreen implements Screen, Disposable
     //list of buttons for the sound
     private List<Button> sounds;
     
+    //list of difficulties
+    private List<Button> difficulty;
+    
+    //store difficulty seletion
+    private int indexDifficulty = 0;
+    
     //the go back button
     private Button back;
     
@@ -81,6 +87,26 @@ public class OptionsScreen implements Screen, Disposable
         
         this.sounds.add(button);
         
+        
+        //add difficulty options
+        this.difficulty = new ArrayList<Button>();
+        y += incrementY;
+        button = new Button(Images.getImage(Assets.ImageKey.Button));
+        button.setText("Levels: Easy");
+        button.setX(x);
+        button.setY(y);
+        button.updateBounds();
+        button.positionText(paint);
+        this.difficulty.add(button);
+        
+        button = new Button(Images.getImage(Assets.ImageKey.Button));
+        button.setText("Levels: Hard");
+        button.setX(x);
+        button.setY(y);
+        button.updateBounds();
+        button.positionText(paint);
+        this.difficulty.add(button);
+        
         y += incrementY;
         //the back button
         this.back = new Button(Images.getImage(Assets.ImageKey.Button));
@@ -131,10 +157,47 @@ public class OptionsScreen implements Screen, Disposable
                     return false;
                 }
             }
+            
+            for (Button button : difficulty)
+            {
+                if (button.contains(x, y))
+                {
+                    //increase index
+                    setIndexDifficulty(getIndexDifficulty() + 1);
+                    
+                    //play sound effect
+                    //play(Assets.AudioKey.MenuSeletion);
+                    
+                    //exit loop
+                    return false;
+                }
+            }
         }
         
         //return true
         return true;
+    }
+    
+    /**
+     * Assign the difficulty index
+     * @param indexDifficulty The desired selection
+     */
+    public void setIndexDifficulty(final int indexDifficulty)
+    {
+        this.indexDifficulty = indexDifficulty;
+        
+        //keep in range
+        if (getIndexDifficulty() >= difficulty.size())
+            setIndexDifficulty(0);
+    }
+    
+    /**
+     * Get the difficulty index
+     * @return The user selection for the difficulty
+     */
+    public int getIndexDifficulty()
+    {
+        return this.indexDifficulty;
     }
     
     @Override
@@ -151,6 +214,11 @@ public class OptionsScreen implements Screen, Disposable
         
         //draw the menu buttons
         sounds.get(Audio.isAudioEnabled() ? 1 : 0).render(canvas, paint);
+        
+        //draw the level difficulty option
+        difficulty.get(getIndexDifficulty()).render(canvas, paint);
+        
+        //render back button
         back.render(canvas, paint);
     }
     
@@ -176,6 +244,21 @@ public class OptionsScreen implements Screen, Disposable
             
             sounds.clear();
             sounds = null;
+        }
+        
+        if (difficulty != null)
+        {
+            for (Button button : difficulty)
+            {
+                if (button != null)
+                {
+                    button.dispose();
+                    button = null;
+                }
+            }
+            
+            difficulty.clear();
+            difficulty = null;
         }
         
         if (paint != null)
