@@ -1,22 +1,6 @@
-
-Microban Levels
-
-David Skinner, author of the \"Sasquatch" and "Mas Sasquatch" collections, released his latest set of sokoban levels in February, 2000 and revised them in April, 2000. He describes them this way:
-
-Microban is a set of very small puzzles which have been slowly developing in-between creating puzzles for my regular sets.
-
-This is a good set for beginners and children. Most of the puzzles illustrate a particular concept. More experienced players should also find them interesting, since they are as different from each other as I could make them given their size. Sokoholics could perhaps time themselves on completing the whole set.
-
-This set also contains puzzles which I thought were interesting but too easy to include in my regular sets.
-
-Author: David Skinner, sasquatch@bentonrea.com
-Original level website: http://users.bentonrea.com/~sasquatch/sokoban/
-
-This file downloaded from the Sokoban levels page at http://sneezingtiger.com/sokoban/levels.html.
-
-######
-#@ $.#
-######
+#######
+#@ $ .#
+#######
 
 Level 1
 ####
@@ -1698,4 +1682,3 @@ Level 155
 #####       #### ####   ######
 
 
-Return to Sokoban levels page

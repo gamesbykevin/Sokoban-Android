@@ -52,7 +52,7 @@ public class GameoverScreen implements Screen, Disposable
     /**
      * The alpha visibility when the menu is not shown
      */
-    private static final int ALPHA_DARK = 75;
+    private static final int ALPHA_DARK = 25;
     
     /**
      * The alpha visibility when the menu is shown

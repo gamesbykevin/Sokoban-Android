@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 
+import com.gamesbykevin.androidframework.base.Cell;
 import com.gamesbykevin.androidframework.io.storage.Internal;
 import com.gamesbykevin.androidframework.resources.Audio;
 
@@ -41,6 +42,9 @@ public final class Game implements IGame
     //our storage object used to save data
     private Internal storage;
     
+    //this is used to move the player
+    private Cell start;
+    
     /**
      * Text delimeter used to parse internal storage data for each level
      */
@@ -55,6 +59,9 @@ public final class Game implements IGame
     {
         //our main screen object reference
         this.screen = screen;
+        
+        //create new cell that we reference to move the player
+        this.start = new Cell();
         
         //create new paint object
         this.paint = new Paint();
@@ -252,16 +259,14 @@ public final class Game implements IGame
                     //check that we haven't selected the player yet
                     if (!getPlayer().isSelected())
                     {
-                        //make sure the player is already at the destination before moving again
+                        //make sure the player is at their destination, before it can be moved
                         if (getPlayer().hasTarget())
                         {
-                            //get the location
-                            final int col = (int)LevelHelper.getCol(getLevels().getLevel(), x);
-                            final int row = (int)LevelHelper.getRow(getLevels().getLevel(), y);
-
-                            //if the location matches the player, mark selected
-                            if (getPlayer().getCol() == col && getPlayer().getRow() == row)
-                                getPlayer().setSelected(true);
+                            start.setCol(LevelHelper.getCol(getLevels().getLevel(), x));
+                            start.setRow(LevelHelper.getRow(getLevels().getLevel(), y));
+                            
+                            //flag player as selected
+                            getPlayer().setSelected(true);
                         }
                     }
                 }
@@ -273,24 +278,44 @@ public final class Game implements IGame
                         //make sure the player is already at the destination before moving again
                         if (getPlayer().hasTarget())
                         {
-                            //get the location
-                            final int col = (int)LevelHelper.getCol(getLevels().getLevel(), x);
-                            final int row = (int)LevelHelper.getRow(getLevels().getLevel(), y);
-
-                            //diagonal movement is not allowed, as well if the destination is same as current location
-                            if (getPlayer().getCol() != col && getPlayer().getRow() != row || getPlayer().getCol() == col && getPlayer().getRow() == row)
+                            //locate new location
+                            double col = LevelHelper.getCol(getLevels().getLevel(), x);
+                            double row = LevelHelper.getRow(getLevels().getLevel(), y);
+                            
+                            //calculate the difference from the previous location
+                            double differenceHorizontal = (start.getCol() > col) ? start.getCol() - col : col - start.getCol();
+                            double differenceVertical = (start.getRow() > row) ? start.getRow() - row : row - start.getRow();
+                            
+                            //the greater different will determine the direction
+                            if (differenceHorizontal > differenceVertical)
                             {
-                                //flip flag
-                                getPlayer().setSelected(!getPlayer().isSelected());
+                                if (start.getCol() > col)
+                                {
+                                    //assign the player destination
+                                    getPlayer().setTarget(getPlayer().getCol() - 1, getPlayer().getRow());
+                                }
+                                else
+                                {
+                                    //assign the player destination
+                                    getPlayer().setTarget(getPlayer().getCol() + 1, getPlayer().getRow());
+                                }
                             }
                             else
                             {
-                                //assign the player destination
-                                getPlayer().setTarget(col, row);
-
-                                //calculate the targets
-                                PlayerHelper.calculateTargets(getPlayer(), getLevels().getLevel());
+                                if (start.getRow() > row)
+                                {
+                                    //assign the player destination
+                                    getPlayer().setTarget(getPlayer().getCol(), getPlayer().getRow() - 1);
+                                }
+                                else
+                                {
+                                    //assign the player destination
+                                    getPlayer().setTarget(getPlayer().getCol(), getPlayer().getRow() + 1);
+                                }
                             }
+                            
+                            //calculate the targets
+                            PlayerHelper.calculateTargets(getPlayer(), getLevels().getLevel());
                         }
                     }
                 }
@@ -362,9 +387,6 @@ public final class Game implements IGame
             controller = null;
         }
         
-        if (paint != null)
-            paint = null;
-        
         if (levels != null)
         {
             levels.dispose();
@@ -377,8 +399,9 @@ public final class Game implements IGame
             player = null;
         }
         
-        if (storage != null)
-            storage = null;
+        paint = null;
+        storage = null;
+        start = null;
     }
     
     /**
