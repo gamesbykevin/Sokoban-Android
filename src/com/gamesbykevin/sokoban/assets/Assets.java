@@ -68,8 +68,12 @@ public class Assets
      */
     public enum TextKey
     {
-        LevelsEasy,
-        LevelsHard,
+        LevelsEasyA,
+        LevelsEasyB,
+        LevelsMediumA,
+        LevelsMediumB,
+        LevelsHardA,
+        LevelsHardB
     }
     
     /**
@@ -78,7 +82,10 @@ public class Assets
      */
     public enum AudioKey
     {
-        
+        LevelComplete,
+        Goal,
+        Music,
+        Selection
     }
     
     /**

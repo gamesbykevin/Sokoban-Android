@@ -3,7 +3,9 @@ package com.gamesbykevin.sokoban.level;
 import android.graphics.Canvas;
 
 import com.gamesbykevin.androidframework.base.Cell;
+import com.gamesbykevin.androidframework.resources.Audio;
 import com.gamesbykevin.androidframework.resources.Disposable;
+import com.gamesbykevin.sokoban.assets.Assets;
 import com.gamesbykevin.sokoban.level.tile.Block;
 
 import com.gamesbykevin.sokoban.level.tile.Tile;
@@ -101,7 +103,7 @@ public final class Level implements Disposable, ILevel
      * Get the key
      * @return The array representing the layout of the level
      */
-    private Tile.Type[][] getKey()
+    protected Tile.Type[][] getKey()
     {
         return this.key;
     }
@@ -228,7 +230,21 @@ public final class Level implements Disposable, ILevel
                 
                 //if the block is now at its destination, check if it is on a goal
                 if (block.hasDestination())
-                    block.setGoal(TileHelper.isGoal(getType((int)block.getCol(), (int)block.getRow())));
+                {
+                    if (TileHelper.isGoal(getType((int)block.getCol(), (int)block.getRow())))
+                    {
+                        //flag at goal
+                        block.setGoal(true);
+                        
+                        //play sound effect
+                        Audio.play(LevelHelper.hasCompleted(this) ? Assets.AudioKey.LevelComplete : Assets.AudioKey.Goal);
+                    }
+                    else
+                    {
+                        //this block is not on a goal
+                        block.setGoal(false);
+                    }
+                }
             }
             else
             {

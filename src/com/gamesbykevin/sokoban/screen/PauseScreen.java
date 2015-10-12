@@ -95,9 +95,12 @@ public class PauseScreen implements Screen, Disposable
         {
             //return to the previous state
             screen.setState(previous);
+            
+            //no need to return additional events
+            return false;
         }
         
-        //return true
+        //return additional motion events
         return true;
     }
     

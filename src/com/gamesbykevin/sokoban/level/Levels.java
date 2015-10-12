@@ -208,8 +208,9 @@ public final class Levels implements ILevels
      * Set the selected level at the specified (x,y) coordinates.<br>
      * @param x x-coordinate
      * @param y y-coordinate
+     * @throws Exception
      */
-    public void setSelected(final float x, final float y)
+    public void setSelected(final float x, final float y) throws Exception
     {
         //set the start index based on the page
         int i = (COLS * ROWS) * page;
@@ -238,6 +239,9 @@ public final class Levels implements ILevels
                     
                     //set the selection as well
                     setIndex(i);
+                    
+                    //reset the new level
+                    reset();
                     
                     //no need to continue
                     return;
@@ -318,7 +322,7 @@ public final class Levels implements ILevels
     }
     
     /**
-     * Create a new level
+     * Create a new level with the current level tracker
      * @throws Exception 
      */
     public void createLevel() throws Exception
@@ -327,11 +331,11 @@ public final class Levels implements ILevels
         this.level = new Level(getLevelTracker());
         
         //get the size from the level tracker info
-        final int cols = trackers.get(getIndex()).getCols();
-        final int rows = trackers.get(getIndex()).getRows();
+        final int cols = getLevelTracker().getCols();
+        final int rows = getLevelTracker().getRows();
         
         //now load each line into the level
-        for (int i = trackers.get(getIndex()).getLineStart(); i <= trackers.get(getIndex()).getLineEnd(); i++)
+        for (int i = getLevelTracker().getLineStart(); i <= getLevelTracker().getLineEnd(); i++)
         {
             this.level.load(Files.getText(getKey()).getLines().get(i));
         }

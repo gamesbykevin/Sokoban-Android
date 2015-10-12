@@ -64,9 +64,9 @@ public class Controller implements IController
         this.buttons.get(Assets.ImageKey.MenuReset).setX(RESET_X);
         this.buttons.get(Assets.ImageKey.MenuReset).setY(RESET_Y);
         
-        int x = 100;
+        int x = 40;
         final int y = 710;
-        final int incrementX = 100;
+        final int incrementX = 160;
         
         this.buttons.get(Assets.ImageKey.MenuSoundOff).setX(x);
         this.buttons.get(Assets.ImageKey.MenuSoundOff).setY(y);
@@ -103,6 +103,7 @@ public class Controller implements IController
      * @param x (x-coordinate)
      * @param y (y-coordinate)
      * @return true if motion event was applied, false otherwise
+     * @throws Exception
      */
     public boolean updateMotionEvent(final MotionEvent event, final float x, final float y) throws Exception
     {
@@ -134,8 +135,8 @@ public class Controller implements IController
                 //make sure the correct button is showing
                 if (Audio.isAudioEnabled())
                 {
-                    //play random song
-                    //Assets.playSong();
+                    //play song
+                    Audio.play(Assets.AudioKey.Music, true);
                 }
                 else
                 {
@@ -153,6 +154,9 @@ public class Controller implements IController
                 
                 //reset the player as well
                 getGame().getPlayer().reset(getGame().getLevels().getLevel());
+                
+                //event was applied
+                return true;
             }
         }
         

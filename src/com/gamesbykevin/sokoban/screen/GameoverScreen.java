@@ -36,7 +36,7 @@ public class GameoverScreen implements Screen, Disposable
     private int pixelW;
     
     //buttons
-    private Button nextLevel, replayLevel, mainmenu, rateapp, exitgame;
+    private Button nextLevel, replayLevel, mainmenu, rateapp;
     
     //time we have displayed text
     private long time;
@@ -115,14 +115,6 @@ public class GameoverScreen implements Screen, Disposable
         this.rateapp.updateBounds();
         this.rateapp.setText(MenuScreen.BUTTON_TEXT_RATE_APP);
         this.rateapp.positionText(screen.getPaint());
-        
-        y += addY;
-        this.exitgame = new Button(Images.getImage(Assets.ImageKey.Button));
-        this.exitgame.setX(x);
-        this.exitgame.setY(y);
-        this.exitgame.updateBounds();
-        this.exitgame.setText(MenuScreen.BUTTON_TEXT_EXIT_GAME);
-        this.exitgame.positionText(screen.getPaint());
     }
     
     /**
@@ -177,15 +169,6 @@ public class GameoverScreen implements Screen, Disposable
         {
             if (nextLevel.contains(x, y))
             {
-                //stop sound
-                Audio.stop();
-                
-                //play sound effect
-                //Audio.play(Assets.AudioKey.MenuSeletion);
-                
-                //move back to the game
-                screen.setState(MainScreen.State.Running);
-                
                 //move to next level
                 screen.getScreenGame().getGame().getLevels().setIndex(screen.getScreenGame().getGame().getLevels().getIndex() + 1);
                 
@@ -194,50 +177,54 @@ public class GameoverScreen implements Screen, Disposable
                 
                 //position player at start of next level
                 screen.getScreenGame().getGame().getPlayer().reset(screen.getScreenGame().getGame().getLevels().getLevel());
-            }
-            else if (replayLevel.contains(x, y))
-            {
+                
                 //move back to the game
                 screen.setState(MainScreen.State.Running);
                 
+                //play sound effect
+                Audio.play(Assets.AudioKey.Selection);
+                
+                //we don't request additional motion events
+                return false;
+            }
+            else if (replayLevel.contains(x, y))
+            {
                 //reset level
                 screen.getScreenGame().getGame().getLevels().reset();
                 
                 //position player at start of level
                 screen.getScreenGame().getGame().getPlayer().reset(screen.getScreenGame().getGame().getLevels().getLevel());
+                
+                //move back to the game
+                screen.setState(MainScreen.State.Running);
+                
+                //play sound effect
+                Audio.play(Assets.AudioKey.Selection);
+                
+                //we don't request additional motion events
+                return false;
             }
             else if (mainmenu.contains(x, y))
             {
-                //stop sound
-                Audio.stop();
-                
-                //play sound effect
-                //Audio.play(Assets.AudioKey.MenuSeletion);
-                
                 //move to the main menu
                 screen.setState(MainScreen.State.Ready);
+                
+                //play sound effect
+                Audio.play(Assets.AudioKey.Selection);
+                
+                //we don't request additional motion events
+                return false;
             }
             else if (rateapp.contains(x, y))
             {
-                //stop sound
-                Audio.stop();
-                
                 //play sound effect
-                //Audio.play(Assets.AudioKey.MenuSeletion);
+                Audio.play(Assets.AudioKey.Selection);
                 
                 //go to rate game page
                 screen.getPanel().getActivity().openWebpage(MainActivity.WEBPAGE_RATE_URL);
-            }
-            else if (exitgame.contains(x, y))
-            {
-                //stop sound
-                Audio.stop();
                 
-                //play sound effect
-                //Audio.play(Assets.AudioKey.MenuSeletion);
-                
-                //exit game
-                screen.getPanel().getActivity().finish();
+                //we don't request additional motion events
+                return false;
             }
         }
         
@@ -255,8 +242,6 @@ public class GameoverScreen implements Screen, Disposable
             if (System.currentTimeMillis() - time >= DELAY_MENU_DISPLAY)
                 display = true;
         }
-        
-        //nothing needed to update here
     }
     
     @Override
@@ -290,7 +275,6 @@ public class GameoverScreen implements Screen, Disposable
             replayLevel.render(canvas, screen.getPaint());
             rateapp.render(canvas, screen.getPaint());
             mainmenu.render(canvas, screen.getPaint());
-            exitgame.render(canvas, screen.getPaint());
         }
     }
     
@@ -316,12 +300,6 @@ public class GameoverScreen implements Screen, Disposable
         {
             mainmenu.dispose();
             mainmenu = null;
-        }
-        
-        if (exitgame != null)
-        {
-            exitgame.dispose();
-            exitgame = null;
         }
         
         if (rateapp != null)

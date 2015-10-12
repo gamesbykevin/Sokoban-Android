@@ -100,12 +100,45 @@ public class OptionsScreen implements Screen, Disposable
         this.difficulty.add(button);
         
         button = new Button(Images.getImage(Assets.ImageKey.Button));
+        button.setText("Levels: Easy 2");
+        button.setX(x);
+        button.setY(y);
+        button.updateBounds();
+        button.positionText(paint);
+        this.difficulty.add(button);
+        
+        button = new Button(Images.getImage(Assets.ImageKey.Button));
+        button.setText("Levels: Medium");
+        button.setX(x);
+        button.setY(y);
+        button.updateBounds();
+        button.positionText(paint);
+        this.difficulty.add(button);
+        
+        button = new Button(Images.getImage(Assets.ImageKey.Button));
+        button.setText("Levels: Medium 2");
+        button.setX(x);
+        button.setY(y);
+        button.updateBounds();
+        button.positionText(paint);
+        this.difficulty.add(button);
+        
+        button = new Button(Images.getImage(Assets.ImageKey.Button));
         button.setText("Levels: Hard");
         button.setX(x);
         button.setY(y);
         button.updateBounds();
         button.positionText(paint);
         this.difficulty.add(button);
+        
+        button = new Button(Images.getImage(Assets.ImageKey.Button));
+        button.setText("Levels: Hard 2");
+        button.setX(x);
+        button.setY(y);
+        button.updateBounds();
+        button.positionText(paint);
+        this.difficulty.add(button);
+        
         
         y += incrementY;
         //the back button
@@ -133,11 +166,11 @@ public class OptionsScreen implements Screen, Disposable
         {
             if (back.contains(x, y))
             {
-                //play sound effect
-                //Audio.play(Assets.AudioKey.MenuSeletion);
-                
                 //set ready state
                 screen.setState(MainScreen.State.Ready);
+                
+                //play sound effect
+                Audio.play(Assets.AudioKey.Selection);
                 
                 //no need to continue
                 return false;
@@ -151,7 +184,7 @@ public class OptionsScreen implements Screen, Disposable
                     Audio.setAudioEnabled(!Audio.isAudioEnabled());
                     
                     //play sound effect
-                    //play(Assets.AudioKey.MenuSeletion);
+                    Audio.play(Assets.AudioKey.Selection);
                     
                     //exit loop
                     return false;
@@ -166,7 +199,7 @@ public class OptionsScreen implements Screen, Disposable
                     setIndexDifficulty(getIndexDifficulty() + 1);
                     
                     //play sound effect
-                    //play(Assets.AudioKey.MenuSeletion);
+                    Audio.play(Assets.AudioKey.Selection);
                     
                     //exit loop
                     return false;

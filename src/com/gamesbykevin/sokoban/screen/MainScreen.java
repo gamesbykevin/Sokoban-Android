@@ -84,7 +84,7 @@ public final class MainScreen implements Screen, Disposable
         this.panel = panel;
         
         //default to the ready state
-        this.state = State.Ready;
+        setState(State.Ready);
         
         //create new hashmap
         this.screens = new HashMap<State, Screen>();
@@ -184,6 +184,10 @@ public final class MainScreen implements Screen, Disposable
         {
             //set the previous state
             getScreenPaused().setStatePrevious(getState());
+            
+            //if the player exists, stop the timer when paused
+            if (getScreenGame().getGame() != null && getScreenGame().getGame().getPlayer() != null)
+                getScreenGame().getGame().getPlayer().stopTimer();
         }
         else if (state == State.GameOver && getState() != State.Paused)
         {
@@ -191,17 +195,23 @@ public final class MainScreen implements Screen, Disposable
             getScreen(state).reset();
         }
         
-        //if not in the running state
-        if (state != State.Running)
+        //if we are not in running, but we will now be
+        if (getState() != State.Running && state == State.Running)
         {
-            //if we were previously running stop audio
-            if (getState() == State.Running)
-                Audio.stop();
+            //stop all sound
+            Audio.stop();
+            
+            //play song
+            Audio.play(Assets.AudioKey.Music, true);
+        }
+        else if (state == State.GameOver)
+        {
+            Audio.stop(Assets.AudioKey.Music);
         }
         else
         {
-            //play random song
-            //Assets.playSong();
+            //stop all sound
+            Audio.stop();
         }
         
         //assign the state

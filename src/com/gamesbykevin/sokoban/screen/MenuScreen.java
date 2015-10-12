@@ -149,54 +149,72 @@ public class MenuScreen implements Screen, Disposable
         {
             if (buttons.get(Key.Start).contains(x, y))
             {
-                //play sound effect
-                //Audio.play(Assets.AudioKey.MenuSeletion);
+                //create the game
+                screen.getScreenGame().createGame();
                 
                 //set running state
                 screen.setState(MainScreen.State.Running);
-
-                //create the game
-                screen.getScreenGame().createGame();
+                
+                //play sound effect
+                Audio.play(Assets.AudioKey.Selection);
+                
+                //we do not request any additional events
+                return false;
             }
             else if (buttons.get(Key.Settings).contains(x, y))
             {
-                //play sound effect
-                //Audio.play(Assets.AudioKey.MenuSeletion);
-                
                 //set the state
                 screen.setState(MainScreen.State.Options);
+                
+                //play sound effect
+                Audio.play(Assets.AudioKey.Selection);
+                
+                //we do not request any additional events
+                return false;
             }
             else if (buttons.get(Key.Instructions).contains(x, y))
             {
                 //play sound effect
-                //Audio.play(Assets.AudioKey.MenuSeletion);
+                Audio.play(Assets.AudioKey.Selection);
                 
                 //go to instructions
                 this.screen.getPanel().getActivity().openWebpage(MainActivity.WEBPAGE_GAME_INSTRUCTIONS_URL);
+                
+                //we do not request any additional events
+                return false;
             }
             else if (buttons.get(Key.Rate).contains(x, y))
             {
                 //play sound effect
-                //Audio.play(Assets.AudioKey.MenuSeletion);
+                Audio.play(Assets.AudioKey.Selection);
                 
                 //go to web page
                 this.screen.getPanel().getActivity().openWebpage(MainActivity.WEBPAGE_RATE_URL);
+                
+                //we do not request any additional events
+                return false;
             }
             else if (buttons.get(Key.More).contains(x, y))
             {
                 //play sound effect
-                //Audio.play(Assets.AudioKey.MenuSeletion);
+                Audio.play(Assets.AudioKey.Selection);
                 
                 //go to web page
                 this.screen.getPanel().getActivity().openWebpage(MainActivity.WEBPAGE_MORE_GAMES_URL);
+                
+                //we do not request any additional events
+                return false;
             }
             else if (buttons.get(Key.Exit).contains(x, y))
             {
                 //play sound effect
-                //Audio.play(Assets.AudioKey.MenuSeletion);
+                Audio.play(Assets.AudioKey.Selection);
                 
                 //exit game
                 this.screen.getPanel().getActivity().finish();
+                
+                //we do not request any additional events
+                return false;
             }
         }
         
