@@ -69,7 +69,7 @@ public class Player extends Entity implements IPlayer
     /**
      * Location where a player's personal best stats are rendered
      */
-    public static final int PERSONAL_BEST_INFO_X = 185;
+    public static final int PERSONAL_BEST_INFO_X = 165;
     
     /**
      * Location where a player's personal best stats are rendered

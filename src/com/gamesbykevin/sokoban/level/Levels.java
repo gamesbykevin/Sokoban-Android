@@ -62,6 +62,9 @@ public final class Levels implements ILevels
     //the current page number for the level select
     private int page = 0;
     
+    //the level description to display
+    private String levelDesc = "";
+    
     /**
      * Create levels
      * @param key The unique key of the desired text file
@@ -450,6 +453,24 @@ public final class Levels implements ILevels
         createLevel();
     }
     
+    /**
+     * Set the level difficulty description
+     * @param levelDesc The desired text to be displayed when rendering the level select screen
+     */
+    public void setLevelDesc(final String levelDesc)
+    {
+        this.levelDesc = levelDesc;
+    }
+    
+    /**
+     * Get the level difficulty description
+     * @return The description to be displayed when rendering the level select screen
+     */
+    public String getLevelDesc()
+    {
+        return this.levelDesc;
+    }
+    
     private int getLevelIconX(final int col)
     {
         return LEVEL_SELECT_START_X + (int)((levelIconIncomplete.getWidth() * 1.5) * col);
@@ -535,6 +556,9 @@ public final class Levels implements ILevels
             
             //draw custom text
             canvas.drawText(LEVEL_START_TEXT, LEVEL_START_TEXT_X, LEVEL_START_TEXT_Y, paint);
+            
+            //draw the difficulty
+            canvas.drawText(getLevelDesc(), LEVEL_START_TEXT_X, LEVEL_START_TEXT_Y + 25, paint);
         }
     }
 }

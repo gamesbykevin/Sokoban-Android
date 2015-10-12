@@ -7,13 +7,11 @@ import android.view.MotionEvent;
 
 import com.gamesbykevin.androidframework.base.Cell;
 import com.gamesbykevin.androidframework.io.storage.Internal;
-import com.gamesbykevin.androidframework.resources.Audio;
 
 import com.gamesbykevin.sokoban.assets.Assets;
 import com.gamesbykevin.sokoban.game.controller.Controller;
 import com.gamesbykevin.sokoban.level.LevelHelper;
 import com.gamesbykevin.sokoban.level.Levels;
-import com.gamesbykevin.sokoban.level.tile.TileHelper;
 import com.gamesbykevin.sokoban.player.Player;
 import com.gamesbykevin.sokoban.player.PlayerHelper;
 import com.gamesbykevin.sokoban.screen.MainScreen;
@@ -111,6 +109,9 @@ public final class Game implements IGame
         
         //mark as level not selected
         getLevels().setSelected(false);
+        
+        //assign the level description
+        getLevels().setLevelDesc(key.toString());
         
         //default to 1st page
         getLevels().setPage(0);
@@ -419,8 +420,8 @@ public final class Game implements IGame
                 //if level was completed previously, display personal best
                 if (getLevels().getLevelTracker().isCompleted())
                 {
-                    canvas.drawText("Best: " + getLevels().getLevelTracker().getMoves(), Player.PERSONAL_BEST_INFO_X, Player.PERSONAL_BEST_INFO_Y, screen.getPaint());
-                    canvas.drawText("Best: " + PlayerHelper.getTimeDescription(getLevels().getLevelTracker().getTime()), Player.PERSONAL_BEST_INFO_X, Player.PERSONAL_BEST_INFO_Y * 2, screen.getPaint());
+                    canvas.drawText("Best Move: " + getLevels().getLevelTracker().getMoves(), Player.PERSONAL_BEST_INFO_X, Player.PERSONAL_BEST_INFO_Y, screen.getPaint());
+                    canvas.drawText("Best Time: " + PlayerHelper.getTimeDescription(getLevels().getLevelTracker().getTime()), Player.PERSONAL_BEST_INFO_X, Player.PERSONAL_BEST_INFO_Y * 2, screen.getPaint());
                 }
                 
                 //render player

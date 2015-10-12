@@ -68,12 +68,12 @@ public class Assets
      */
     public enum TextKey
     {
-        LevelsEasyA,
-        LevelsEasyB,
-        LevelsMediumA,
-        LevelsMediumB,
-        LevelsHardA,
-        LevelsHardB
+        Easy_A,
+        Easy_B,
+        Medium_A,
+        Medium_B,
+        Hard_A,
+        Hard_B
     }
     
     /**

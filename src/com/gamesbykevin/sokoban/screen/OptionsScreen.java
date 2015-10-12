@@ -91,54 +91,17 @@ public class OptionsScreen implements Screen, Disposable
         //add difficulty options
         this.difficulty = new ArrayList<Button>();
         y += incrementY;
-        button = new Button(Images.getImage(Assets.ImageKey.Button));
-        button.setText("Levels: Easy");
-        button.setX(x);
-        button.setY(y);
-        button.updateBounds();
-        button.positionText(paint);
-        this.difficulty.add(button);
         
-        button = new Button(Images.getImage(Assets.ImageKey.Button));
-        button.setText("Levels: Easy 2");
-        button.setX(x);
-        button.setY(y);
-        button.updateBounds();
-        button.positionText(paint);
-        this.difficulty.add(button);
-        
-        button = new Button(Images.getImage(Assets.ImageKey.Button));
-        button.setText("Levels: Medium");
-        button.setX(x);
-        button.setY(y);
-        button.updateBounds();
-        button.positionText(paint);
-        this.difficulty.add(button);
-        
-        button = new Button(Images.getImage(Assets.ImageKey.Button));
-        button.setText("Levels: Medium 2");
-        button.setX(x);
-        button.setY(y);
-        button.updateBounds();
-        button.positionText(paint);
-        this.difficulty.add(button);
-        
-        button = new Button(Images.getImage(Assets.ImageKey.Button));
-        button.setText("Levels: Hard");
-        button.setX(x);
-        button.setY(y);
-        button.updateBounds();
-        button.positionText(paint);
-        this.difficulty.add(button);
-        
-        button = new Button(Images.getImage(Assets.ImageKey.Button));
-        button.setText("Levels: Hard 2");
-        button.setX(x);
-        button.setY(y);
-        button.updateBounds();
-        button.positionText(paint);
-        this.difficulty.add(button);
-        
+        for (Assets.TextKey key : Assets.TextKey.values())
+        {
+            button = new Button(Images.getImage(Assets.ImageKey.Button));
+            button.setText("Levels: " + key.toString());
+            button.setX(x);
+            button.setY(y);
+            button.updateBounds();
+            button.positionText(paint);
+            this.difficulty.add(button);
+        }
         
         y += incrementY;
         //the back button
