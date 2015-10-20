@@ -96,16 +96,16 @@ public class Assets
     public static final void load(final Activity activity) throws Exception
     {
         //load all images
-        Images.load(activity, ImageKey.values(), DIRECTORY_IMAGE);
+        Images.load(activity, ImageKey.values(), DIRECTORY_IMAGE, true);
         
         //load all fonts
-        Font.load(activity, FontKey.values(), DIRECTORY_FONT);
+        Font.load(activity, FontKey.values(), DIRECTORY_FONT, true);
         
         //load all audio
-        Audio.load(activity, AudioKey.values(), DIRECTORY_AUDIO);
+        Audio.load(activity, AudioKey.values(), DIRECTORY_AUDIO, true);
         
         //load all text files
-        Files.load(activity, TextKey.values(), DIRECTORY_TEXT);
+        Files.load(activity, TextKey.values(), DIRECTORY_TEXT, true);
     }
     
     /**
