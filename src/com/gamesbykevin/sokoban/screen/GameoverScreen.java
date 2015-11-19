@@ -89,7 +89,7 @@ public class GameoverScreen implements Screen, Disposable
         this.nextLevel.setX(x);
         this.nextLevel.setY(y);
         this.nextLevel.updateBounds();
-        this.nextLevel.setText(BUTTON_TEXT_NEW_GAME);
+        this.nextLevel.addDescription(BUTTON_TEXT_NEW_GAME);
         this.nextLevel.positionText(screen.getPaint());
         
         y+= addY;
@@ -97,7 +97,7 @@ public class GameoverScreen implements Screen, Disposable
         this.replayLevel.setX(x);
         this.replayLevel.setY(y);
         this.replayLevel.updateBounds();
-        this.replayLevel.setText(BUTTON_TEXT_REPLAY);
+        this.replayLevel.addDescription(BUTTON_TEXT_REPLAY);
         this.replayLevel.positionText(screen.getPaint());
         
         y += addY;
@@ -105,7 +105,7 @@ public class GameoverScreen implements Screen, Disposable
         this.mainmenu.setX(x);
         this.mainmenu.setY(y);
         this.mainmenu.updateBounds();
-        this.mainmenu.setText(BUTTON_TEXT_MENU);
+        this.mainmenu.addDescription(BUTTON_TEXT_MENU);
         this.mainmenu.positionText(screen.getPaint());
         
         y += addY;
@@ -113,7 +113,7 @@ public class GameoverScreen implements Screen, Disposable
         this.rateapp.setX(x);
         this.rateapp.setY(y);
         this.rateapp.updateBounds();
-        this.rateapp.setText(MenuScreen.BUTTON_TEXT_RATE_APP);
+        this.rateapp.addDescription(MenuScreen.BUTTON_TEXT_RATE_APP);
         this.rateapp.positionText(screen.getPaint());
     }
     

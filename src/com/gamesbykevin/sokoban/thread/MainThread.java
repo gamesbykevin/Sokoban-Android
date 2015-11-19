@@ -4,8 +4,6 @@ import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 import com.gamesbykevin.androidframework.anim.Animation;
 
-import static java.lang.Thread.sleep;
-
 import com.gamesbykevin.sokoban.panel.GamePanel;
 
 /**
@@ -85,7 +83,7 @@ public class MainThread extends Thread
 
                         //if the canvas object was obtained, render
                         if (canvas != null)
-                            this.panel.onDraw(canvas);
+                            this.panel.draw(canvas);
                     }
                 }
                 catch (Exception e)

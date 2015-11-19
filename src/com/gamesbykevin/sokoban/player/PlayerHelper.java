@@ -63,6 +63,7 @@ public class PlayerHelper
                 break;
 
             case WalkSouth:
+            	default:
                 player.setAnimation(Player.Key.IdleSouth);
                 break;
         }

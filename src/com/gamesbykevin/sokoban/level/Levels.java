@@ -4,7 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.gamesbykevin.androidframework.awt.Button;
-import com.gamesbykevin.androidframework.io.storage.Internal;
 import com.gamesbykevin.androidframework.resources.Files;
 import com.gamesbykevin.androidframework.resources.Images;
 
@@ -86,7 +85,9 @@ public final class Levels implements ILevels
         
         //create buttons
         this.levelIconIncomplete = new Button(Images.getImage(Assets.ImageKey.LevelIconIncomplete));
+        this.levelIconIncomplete.addDescription("");
         this.levelIconComplete = new Button(Images.getImage(Assets.ImageKey.LevelIconComplete));
+        this.levelIconComplete.addDescription("");
         
         //next page button
         this.levelNext = new Button(Images.getImage(Assets.ImageKey.LevelNext));
@@ -521,7 +522,7 @@ public final class Levels implements ILevels
                         levelIconIncomplete.setY(getLevelIconY(row));
 
                         //set the # text
-                        levelIconIncomplete.setText((i + 1) + "");
+                        levelIconIncomplete.setDescription(levelIconIncomplete.getIndex(), (i + 1) + "");
 
                         //center text in middle
                         levelIconIncomplete.positionText(paint);
@@ -536,7 +537,7 @@ public final class Levels implements ILevels
                         levelIconComplete.setY(getLevelIconY(row));
 
                         //set the # text
-                        levelIconComplete.setText((i + 1) + "");
+                        levelIconComplete.setDescription(levelIconComplete.getIndex(), (i + 1) + "");
 
                         //center text in middle
                         levelIconComplete.positionText(paint);

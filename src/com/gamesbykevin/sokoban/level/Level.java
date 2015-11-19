@@ -433,6 +433,7 @@ public final class Level implements Disposable, ILevel
                     case Wall:
                     case Goal:
                     case Block:
+                	default:
                         tile.setX(x + (TileHelper.DEFAULT_DIMENSION / 2) - (tile.getWidth() / 2));
                         tile.setY(y + (TileHelper.DEFAULT_DIMENSION / 2) - (tile.getHeight() / 2));
                         tile.render(canvas);

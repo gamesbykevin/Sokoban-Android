@@ -12,7 +12,6 @@ import com.gamesbykevin.androidframework.resources.Disposable;
 import com.gamesbykevin.androidframework.resources.Images;
 import com.gamesbykevin.androidframework.screen.Screen;
 import com.gamesbykevin.sokoban.assets.Assets;
-import com.gamesbykevin.sokoban.game.Game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public class OptionsScreen implements Screen, Disposable
     //list of difficulties
     private List<Button> difficulty;
     
-    //store difficulty seletion
+    //store difficulty selection
     private int indexDifficulty = 0;
     
     //the go back button
@@ -70,7 +69,7 @@ public class OptionsScreen implements Screen, Disposable
         this.sounds = new ArrayList<Button>();
         
         Button button = new Button(Images.getImage(Assets.ImageKey.Button));
-        button.setText("Sound: Disabled");
+        button.addDescription("Sound: Disabled");
         button.setX(x);
         button.setY(y);
         button.updateBounds();
@@ -79,7 +78,7 @@ public class OptionsScreen implements Screen, Disposable
         this.sounds.add(button);
         
         button = new Button(Images.getImage(Assets.ImageKey.Button));
-        button.setText("Sound: Enabled");
+        button.addDescription("Sound: Enabled");
         button.setX(x);
         button.setY(y);
         button.updateBounds();
@@ -95,7 +94,7 @@ public class OptionsScreen implements Screen, Disposable
         for (Assets.TextKey key : Assets.TextKey.values())
         {
             button = new Button(Images.getImage(Assets.ImageKey.Button));
-            button.setText("Levels: " + key.toString());
+            button.addDescription("Levels: " + key.toString());
             button.setX(x);
             button.setY(y);
             button.updateBounds();
@@ -106,7 +105,7 @@ public class OptionsScreen implements Screen, Disposable
         y += incrementY;
         //the back button
         this.back = new Button(Images.getImage(Assets.ImageKey.Button));
-        this.back.setText("Go Back");
+        this.back.addDescription("Go Back");
         this.back.setX(x);
         this.back.setY(y);
         this.back.updateBounds();

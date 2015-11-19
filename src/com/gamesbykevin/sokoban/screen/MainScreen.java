@@ -13,7 +13,6 @@ import com.gamesbykevin.androidframework.resources.Images;
 import com.gamesbykevin.androidframework.screen.Screen;
 
 import com.gamesbykevin.sokoban.assets.Assets;
-import com.gamesbykevin.sokoban.game.Game;
 import com.gamesbykevin.sokoban.panel.GamePanel;
 
 import java.util.HashMap;

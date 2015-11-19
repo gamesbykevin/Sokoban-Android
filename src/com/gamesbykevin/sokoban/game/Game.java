@@ -44,12 +44,12 @@ public final class Game implements IGame
     private Cell start;
     
     /**
-     * Text delimeter used to parse internal storage data for each level
+     * Text delimiter used to parse internal storage data for each level
      */
     private static final String STORAGE_DELIMITER_LEVEL = ",";
     
     /**
-     * Text delimeter used to parse internal storage data for each attribute in a level
+     * Text delimiter used to parse internal storage data for each attribute in a level
      */
     private static final String STORAGE_DELIMITER_ATTRIBUTE = ";";
     

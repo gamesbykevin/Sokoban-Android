@@ -1,9 +1,5 @@
 package com.gamesbykevin.sokoban.level;
 
-import com.gamesbykevin.androidframework.anim.Animation;
-import com.gamesbykevin.androidframework.resources.Images;
-import com.gamesbykevin.sokoban.assets.Assets;
-
 import com.gamesbykevin.sokoban.level.tile.*;
 import com.gamesbykevin.sokoban.panel.GamePanel;
 import com.gamesbykevin.sokoban.target.Target;

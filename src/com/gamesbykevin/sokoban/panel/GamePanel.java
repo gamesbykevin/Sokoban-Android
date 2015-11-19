@@ -226,7 +226,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Di
     }
     
     @Override
-    public void onDraw(Canvas canvas)
+    public void draw(Canvas canvas)
     {
         if (canvas != null)
         {
