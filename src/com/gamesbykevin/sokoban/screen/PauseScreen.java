@@ -28,15 +28,15 @@ public class PauseScreen implements Screen, Disposable
     private final int pixelW, pixelH;
     
     //our main screen reference
-    private final MainScreen screen;
+    private final ScreenManager screen;
     
     //object to paint background
     private Paint paint;
     
     //store the previous state
-    private MainScreen.State previous;
+    private ScreenManager.State previous;
     
-    public PauseScreen(final MainScreen screen)
+    public PauseScreen(final ScreenManager screen)
     {
         //store our parent reference
         this.screen = screen;
@@ -45,7 +45,7 @@ public class PauseScreen implements Screen, Disposable
         this.paint = new Paint();
         this.paint.setColor(Color.WHITE);
         this.paint.setTextSize(64f);
-        this.paint.setTypeface(Font.getFont(Assets.FontKey.Default));
+        this.paint.setTypeface(Font.getFont(Assets.FontMenuKey.Default));
         
         //create temporary rectangle
         Rect tmp = new Rect();
@@ -63,10 +63,10 @@ public class PauseScreen implements Screen, Disposable
      * We need this, so when un-pause we know where to go back
      * @param previous The previous state
      */
-    public void setStatePrevious(final MainScreen.State previous)
+    public void setStatePrevious(final ScreenManager.State previous)
     {
         //only store if not pause
-        if (previous != MainScreen.State.Paused)
+        if (previous != ScreenManager.State.Paused)
             this.previous = previous;
     }
     
@@ -74,7 +74,7 @@ public class PauseScreen implements Screen, Disposable
      * Get the previous state
      * @return The previous state before the game was paused
      */
-    public MainScreen.State getStatePrevious()
+    public ScreenManager.State getStatePrevious()
     {
         return this.previous;
     }

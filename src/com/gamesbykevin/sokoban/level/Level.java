@@ -10,6 +10,7 @@ import com.gamesbykevin.sokoban.level.tile.Block;
 
 import com.gamesbykevin.sokoban.level.tile.Tile;
 import com.gamesbykevin.sokoban.level.tile.TileHelper;
+import com.gamesbykevin.sokoban.panel.GamePanel;
 import com.gamesbykevin.sokoban.player.Player;
 import com.gamesbykevin.sokoban.target.Target;
 
@@ -57,7 +58,7 @@ public final class Level implements Disposable, ILevel
      * Create the level
      * @param tracker Object containing level info
      */
-    protected Level(final Tracker tracker)
+    protected Level(final LevelInfo tracker)
     {
         //create new key
         this.key = new Tile.Type[tracker.getRows()][tracker.getCols()];
@@ -237,7 +238,7 @@ public final class Level implements Disposable, ILevel
                         block.setGoal(true);
                         
                         //play sound effect
-                        Audio.play(LevelHelper.hasCompleted(this) ? Assets.AudioKey.LevelComplete : Assets.AudioKey.Goal);
+                        Audio.play(LevelHelper.hasCompleted(this) ? Assets.AudioGameKey.LevelComplete : Assets.AudioGameKey.Goal);
                     }
                     else
                     {
@@ -421,6 +422,12 @@ public final class Level implements Disposable, ILevel
                 tile.setX(x);
                 tile.setY(y);
                 
+              //make sure that we aren't rendering items that aren't on the screen
+                if (tile.getX() < -tile.getWidth() || tile.getX() > GamePanel.WIDTH)
+                	continue;
+                if (tile.getY() < -tile.getHeight() || tile.getY() > GamePanel.HEIGHT)
+                	continue;
+                
                 //render the floor
                 tile.render(canvas);
                 
@@ -455,6 +462,12 @@ public final class Level implements Disposable, ILevel
             //assign the location
             tile.setX(x + (TileHelper.DEFAULT_DIMENSION / 2) - (tile.getWidth() / 2));
             tile.setY(y + (TileHelper.DEFAULT_DIMENSION / 2) - (tile.getHeight() / 2));
+            
+            //make sure that we aren't rendering items that aren't on the screen
+            if (tile.getX() < -tile.getWidth() || tile.getX() > GamePanel.WIDTH)
+            	continue;
+            if (tile.getY() < -tile.getHeight() || tile.getY() > GamePanel.HEIGHT)
+            	continue;
             
             //default block animation
             tile.getSpritesheet().setKey(cell.hasGoal() ? Block.State.Alternate : Block.State.Default);

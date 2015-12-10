@@ -17,9 +17,9 @@ public class GameScreen implements Screen, Disposable
     private Game game;
     
     //our main screen reference
-    private final MainScreen screen;
+    private final ScreenManager screen;
     
-    public GameScreen(final MainScreen screen)
+    public GameScreen(final ScreenManager screen)
     {
         this.screen = screen;
     }
@@ -39,7 +39,7 @@ public class GameScreen implements Screen, Disposable
             this.game = new Game(screen);
         
         //reset the game
-        getGame().reset(Assets.TextKey.values()[screen.getScreenOptions().getIndexDifficulty()]);
+        getGame().reset(Assets.TextKey.values()[screen.getScreenOptions().getIndex(OptionsScreen.ButtonKey.Difficulty)]);
     }
     
     /**
@@ -55,7 +55,7 @@ public class GameScreen implements Screen, Disposable
     public boolean update(final MotionEvent event, final float x, final float y) throws Exception
     {
         if (getGame() != null)
-            getGame().updateMotionEvent(event, x, y);
+            getGame().update(event, x, y);
         
         return true;
     }

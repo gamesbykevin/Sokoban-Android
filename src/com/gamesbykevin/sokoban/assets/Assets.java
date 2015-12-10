@@ -13,17 +13,32 @@ public class Assets
     /**
      * The directory where audio sound effect resources are kept
      */
-    private static final String DIRECTORY_AUDIO = "audio";
+    private static final String DIRECTORY_MENU_AUDIO = "audio/menu";
     
     /**
-     * The directory where image resources are kept
+     * The directory where audio sound effect resources are kept
      */
-    private static final String DIRECTORY_IMAGE = "image";
+    private static final String DIRECTORY_GAME_AUDIO = "audio/game";
+    
+    /**
+     * The directory where image resources are kept for the menu
+     */
+    private static final String DIRECTORY_MENU_IMAGE = "image/menu";
+    
+    /**
+     * The directory where image resources are kept for the game
+     */
+    private static final String DIRECTORY_GAME_IMAGE = "image/game";
     
     /**
      * The directory where font resources are kept
      */
-    private static final String DIRECTORY_FONT = "font";
+    private static final String DIRECTORY_MENU_FONT = "font/menu";
+    
+    /**
+     * The directory where font resources are kept
+     */
+    private static final String DIRECTORY_GAME_FONT = "font/game";
     
     /**
      * The directory where our text files are kept
@@ -34,32 +49,52 @@ public class Assets
      * The different fonts used in our game.<br>
      * Order these according to the file name in the "font" assets folder.
      */
-    public enum FontKey
+    public enum FontMenuKey
     {
-        Default
+    	Default
+    }
+    
+    /**
+     * The different fonts used in our game.<br>
+     * Order these according to the file name in the "font" assets folder.
+     */
+    public enum FontGameKey
+    {
+    	Default
+    }
+    
+    /**
+     * The different images for our menu items
+     */
+    public enum ImageMenuKey
+    {
+        Background,
+        Button,
+        Facebook,
+        Instructions,
+        Logo,
+        Cancel, 
+        Confirm,
+        Splash,
+        Twitter
     }
     
     /**
      * The different images in our game.<br>
      * Order these according to the file name in the "image" assets folder.
      */
-    public enum ImageKey
+    public enum ImageGameKey
     {
-        Background,
-        Button,
         LevelIconComplete,
         LevelIconIncomplete, 
         LevelNext,
         LevelPrevious, 
-        Logo,
-        MenuCancel, 
-        MenuConfirm, 
-        MenuExit, 
-        MenuPause, 
-        MenuReset,
-        MenuSoundOff, 
-        MenuSoundOn, 
-        Sprites, 
+        Exit, 
+        Pause, 
+        Reset,
+        SoundOff, 
+        SoundOn, 
+        Sprites
     }
     
     /**
@@ -68,24 +103,46 @@ public class Assets
      */
     public enum TextKey
     {
-        Easy_A,
-        Easy_B,
-        Medium_A,
-        Medium_B,
-        Hard_A,
-        Hard_B
+        Easy_A("Easy A"),
+        Easy_B("Easy B"),
+        Easy_C("Easy C"),
+        Easy_D("Easy D"),
+        Medium_A("Medium A"),
+        Medium_B("Medium B"),
+        Hard_A("Hard A"),
+        Hard_B("Hard B");
+    	
+    	private final String desc;
+    	
+    	private TextKey(final String desc)
+    	{
+    		this.desc = desc;
+    	}
+    	
+    	public String getDesc()
+    	{
+    		return this.desc;
+    	}
     }
     
     /**
      * The key of each sound in our game.<br>
      * Order these according to the file name in the "audio" assets folder.
      */
-    public enum AudioKey
+    public enum AudioMenuKey
+    {
+    	Selection
+    }
+    
+    /**
+     * The key of each sound in our game.<br>
+     * Order these according to the file name in the "audio" assets folder.
+     */
+    public enum AudioGameKey
     {
         LevelComplete,
         Goal,
-        Music,
-        Selection
+        Music
     }
     
     /**
@@ -95,14 +152,23 @@ public class Assets
      */
     public static final void load(final Activity activity) throws Exception
     {
-        //load all images
-        Images.load(activity, ImageKey.values(), DIRECTORY_IMAGE, true);
+        //load all images for the menu
+        Images.load(activity, ImageMenuKey.values(), DIRECTORY_MENU_IMAGE, true);
         
-        //load all fonts
-        Font.load(activity, FontKey.values(), DIRECTORY_FONT, true);
+        //load all fonts for the menu
+        Font.load(activity, FontMenuKey.values(), DIRECTORY_MENU_FONT, true);
         
-        //load all audio
-        Audio.load(activity, AudioKey.values(), DIRECTORY_AUDIO, true);
+        //load all audio for the menu
+        Audio.load(activity, AudioMenuKey.values(), DIRECTORY_MENU_AUDIO, true);
+        
+        //load images for the game
+        Images.load(activity, ImageGameKey.values(), DIRECTORY_GAME_IMAGE, true);
+        
+        //load all audio for the game
+        Audio.load(activity, AudioGameKey.values(), DIRECTORY_GAME_AUDIO, true);
+        
+        //load all fonts for the game
+        Font.load(activity, FontGameKey.values(), DIRECTORY_GAME_FONT, true);
         
         //load all text files
         Files.load(activity, TextKey.values(), DIRECTORY_TEXT, true);
@@ -113,9 +179,16 @@ public class Assets
      */
     public static void recycle()
     {
-        Images.dispose();
-        Font.dispose();
-        Audio.dispose();
-        Files.dispose();
+        try
+        {
+            Images.dispose();
+            Font.dispose();
+            Audio.dispose();
+            Files.dispose();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }

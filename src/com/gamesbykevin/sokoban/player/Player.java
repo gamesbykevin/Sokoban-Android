@@ -87,47 +87,50 @@ public class Player extends Entity implements IPlayer
         //delay between each frame
         final int delay = 125;
         
+        //sprite key
+        final Assets.ImageGameKey key = Assets.ImageGameKey.Sprites;
+        
         //our animation object
         Animation animation;
         
         //walk east animation
-        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 128, 42, 58, 2, 1, 2);
+        animation = new Animation(Images.getImage(key), 320, 128, 42, 58, 2, 1, 2);
         animation.setDelay(delay);
         animation.setLoop(true);
         getSpritesheet().add(Key.WalkEast, animation);
         
         //walk west animation
-        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 187, 42, 58, 2, 1, 2);
+        animation = new Animation(Images.getImage(key), 320, 187, 42, 58, 2, 1, 2);
         animation.setDelay(delay);
         animation.setLoop(true);
         getSpritesheet().add(Key.WalkWest, animation);
         
         //walk north animation
-        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 305, 37, 60, 2, 1, 2);
+        animation = new Animation(Images.getImage(key), 320, 305, 37, 60, 2, 1, 2);
         animation.setDelay(delay);
         animation.setLoop(true);
         getSpritesheet().add(Key.WalkNorth, animation);
         
         //walk south animation
-        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 245, 37, 59, 2, 1, 2);
+        animation = new Animation(Images.getImage(key), 320, 245, 37, 59, 2, 1, 2);
         animation.setDelay(delay);
         animation.setLoop(true);
         getSpritesheet().add(Key.WalkSouth, animation);
         
         //idle facing east animation
-        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 128, 42, 58);
+        animation = new Animation(Images.getImage(key), 320, 128, 42, 58);
         getSpritesheet().add(Key.IdleEast, animation);
         
         //idle facing west animation
-        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 320, 187, 42, 58);
+        animation = new Animation(Images.getImage(key), 320, 187, 42, 58);
         getSpritesheet().add(Key.IdleWest, animation);
         
         //idle facing north animation
-        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 384, 0, 37, 60);
+        animation = new Animation(Images.getImage(key), 384, 0, 37, 60);
         getSpritesheet().add(Key.IdleNorth, animation);
         
         //idle facing south animation
-        animation = new Animation(Images.getImage(Assets.ImageKey.Sprites), 384, 65, 37, 59);
+        animation = new Animation(Images.getImage(key), 384, 65, 37, 59);
         getSpritesheet().add(Key.IdleSouth, animation);
         
         //default animation

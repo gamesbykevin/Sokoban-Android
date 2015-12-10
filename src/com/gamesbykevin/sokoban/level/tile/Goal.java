@@ -70,7 +70,7 @@ public final class Goal extends Tile
         if (getSpritesheet().get(style) == null)
         {
             //map the style
-            getSpritesheet().add(style, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+            getSpritesheet().add(style, new Animation(Images.getImage(Assets.ImageGameKey.Sprites), x, y, d, d));
         }
         
         //assign this style as the current

@@ -82,7 +82,6 @@ public class LevelHelper
                 styles.add(Block.Style.Blue);
                 styles.add(Block.Style.Purple);
                 styles.add(Block.Style.Beige);
-                styles.add(Block.Style.Black);
                 styles.add(Block.Style.Gray);
                 styles.add(Block.Style.Brown);
                 break;
@@ -146,7 +145,7 @@ public class LevelHelper
                 break;
         }
         
-        //add block to hashmap
+        //add block to hash map
         tiles.put(Tile.Type.Block, new Block(styles.get(index)));
     }
     

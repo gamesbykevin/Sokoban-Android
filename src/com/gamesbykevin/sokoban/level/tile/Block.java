@@ -39,6 +39,8 @@ public final class Block extends Tile
     {
         int x, y, d = TileHelper.ANIMATION_DIMENSION;
         
+        final Assets.ImageGameKey key = Assets.ImageGameKey.Sprites;
+        
         //set dimensions
         super.setWidth(d);
         super.setHeight(d);
@@ -48,81 +50,81 @@ public final class Block extends Tile
             case Yellow:
                 x = TileHelper.getSpriteSheetX(3);
                 y = TileHelper.getSpriteSheetY(0);
-                getSpritesheet().add(State.Default, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Default, new Animation(Images.getImage(key), x, y, d, d));
 
                 x = TileHelper.getSpriteSheetX(2);
                 y = TileHelper.getSpriteSheetY(4);
-                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(key), x, y, d, d));
                 break;
                 
             case Red:
                 x = TileHelper.getSpriteSheetX(2);
                 y = TileHelper.getSpriteSheetY(5);
-                getSpritesheet().add(State.Default, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Default, new Animation(Images.getImage(key), x, y, d, d));
 
                 x = TileHelper.getSpriteSheetX(4);
                 y = TileHelper.getSpriteSheetY(1);
-                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(key), x, y, d, d));
                 break;
                 
             case Beige:
                 x = TileHelper.getSpriteSheetX(3);
                 y = TileHelper.getSpriteSheetY(1);
-                getSpritesheet().add(State.Default, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Default, new Animation(Images.getImage(key), x, y, d, d));
 
                 x = TileHelper.getSpriteSheetX(5);
                 y = TileHelper.getSpriteSheetY(1);
-                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(key), x, y, d, d));
                 break;
                 
             case Black:
                 x = TileHelper.getSpriteSheetX(3);
                 y = TileHelper.getSpriteSheetY(2);
-                getSpritesheet().add(State.Default, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Default, new Animation(Images.getImage(key), x, y, d, d));
 
                 x = TileHelper.getSpriteSheetX(5);
                 y = TileHelper.getSpriteSheetY(0);
-                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(key), x, y, d, d));
                 break;
                 
             case Brown:
                 x = TileHelper.getSpriteSheetX(3);
                 y = TileHelper.getSpriteSheetY(4);
-                getSpritesheet().add(State.Default, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Default, new Animation(Images.getImage(key), x, y, d, d));
 
                 x = TileHelper.getSpriteSheetX(4);
                 y = TileHelper.getSpriteSheetY(4);
-                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(key), x, y, d, d));
                 break;
                 
             case Purple:
                 x = TileHelper.getSpriteSheetX(4);
                 y = TileHelper.getSpriteSheetY(2);
-                getSpritesheet().add(State.Default, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Default, new Animation(Images.getImage(key), x, y, d, d));
 
                 x = TileHelper.getSpriteSheetX(4);
                 y = TileHelper.getSpriteSheetY(0);
-                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(key), x, y, d, d));
                 break;
                 
             case Blue:
                 x = TileHelper.getSpriteSheetX(3);
                 y = TileHelper.getSpriteSheetY(3);
-                getSpritesheet().add(State.Default, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Default, new Animation(Images.getImage(key), x, y, d, d));
 
                 x = TileHelper.getSpriteSheetX(4);
                 y = TileHelper.getSpriteSheetY(5);
-                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(key), x, y, d, d));
                 break;
                 
             case Gray:
                 x = TileHelper.getSpriteSheetX(3);
                 y = TileHelper.getSpriteSheetY(5);
-                getSpritesheet().add(State.Default, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Default, new Animation(Images.getImage(key), x, y, d, d));
 
                 x = TileHelper.getSpriteSheetX(4);
                 y = TileHelper.getSpriteSheetY(3);
-                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(Assets.ImageKey.Sprites), x, y, d, d));
+                getSpritesheet().add(State.Alternate, new Animation(Images.getImage(key), x, y, d, d));
                 break;
         }
     }

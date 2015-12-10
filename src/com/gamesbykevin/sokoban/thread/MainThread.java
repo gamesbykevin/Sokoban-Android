@@ -17,8 +17,8 @@ public class MainThread extends Thread
      */
     public static final boolean DEBUG = false;
     
-    //the assigned fps for this game
-    private static final int FPS = 30;
+    //the assigned frames per second for this game
+    public static final int FPS = 30;
     
     //our game panel
     private final GamePanel panel;
@@ -30,7 +30,7 @@ public class MainThread extends Thread
     private boolean running;
     
     //our canvas to render image(s)
-    public static Canvas canvas;
+    private Canvas canvas;
     
     /**
      * When the game is terminated and recycling variables, <br>
@@ -38,12 +38,18 @@ public class MainThread extends Thread
      */
     public static final int COMPLETE_THREAD_ATTEMPTS = 1000;
     
+    //do we pause the update/render
+    private boolean pause = false;
+    
     public MainThread(SurfaceHolder holder, GamePanel panel)
     {
+    	//call parent constructor
         super();
         
-        //assign the necessary references
+        //assign surface holder reference object
         this.holder = holder;
+        
+        //assign game panel reference object
         this.panel = panel;
     }
     
@@ -64,26 +70,30 @@ public class MainThread extends Thread
             //continue to loop while the thread is running
             while (isRunning())
             {
+            	//if the game is paused we won't continue
+            	if (isPaused())
+            		continue;
+            	
                 //get the start time of this update
                 final long startTime = System.nanoTime();
 
                 //assign the canvas null
-                canvas = null;
+                setCanvas(null);
 
                 try 
                 {
                     //attempt to lock the canvas to edit the pixels of the surface
-                    canvas = holder.lockCanvas();
+                	setCanvas(getHolder().lockCanvas());
 
                     //make sure no other threads are accessing the holder
-                    synchronized (holder)
+                    synchronized (getHolder())
                     {
                         //update our game panel
-                        this.panel.update();
+                        getPanel().update();
 
-                        //if the canvas object was obtained, render
-                        if (canvas != null)
-                            this.panel.draw(canvas);
+                        //if the canvas object was obtained and we did not pause, render
+                        if (getCanvas() != null && !isPaused())
+                            getPanel().draw(getCanvas());
                     }
                 }
                 catch (Exception e)
@@ -93,12 +103,12 @@ public class MainThread extends Thread
                 finally 
                 {
                     //remove the lock (if possible)
-                    if (canvas != null)
+                    if (getCanvas() != null)
                     {
                         try
                         {
                             //render the pixels on the canvas to the screen
-                            holder.unlockCanvasAndPost(canvas);
+                        	getHolder().unlockCanvasAndPost(getCanvas());
                         }
                         catch (Exception e)
                         {
@@ -156,9 +166,30 @@ public class MainThread extends Thread
         {
             ex.printStackTrace();
         }
-
-        //stop thread
-        this.setRunning(false);
+        finally 
+        {
+	        //stop thread
+	        this.setRunning(false);
+        }
+    }
+    
+    /**
+     * Set the pause flag.<br>
+     * If we are pausing the game we will make sure the canvas is not locked
+     * @param pause true if you want to prevent the game panel update and render, false otherwise
+     */
+    public void setPause(final boolean pause)
+    {
+    	this.pause = pause;
+    }
+    
+    /**
+     * Is the thread paused?<br>
+     * @return true = we will not update or render the game panel object, false = otherwise
+     */
+    public boolean isPaused()
+    {
+    	return this.pause;
     }
     
     /**
@@ -177,5 +208,41 @@ public class MainThread extends Thread
     public boolean isRunning()
     {
         return this.running;
+    }
+    
+    /**
+     * Assign the canvas
+     * @param canvas The desired canvas object
+     */
+    private void setCanvas(final Canvas canvas)
+    {
+    	this.canvas = canvas;
+    }
+    
+    /**
+     * Get the canvas
+     * @return The object we want to write pixel data to
+     */
+    private Canvas getCanvas()
+    {
+    	return this.canvas;
+    }
+    
+    /**
+     * Get the game panel
+     * @return The game panel object reference
+     */
+    private GamePanel getPanel()
+    {
+    	return this.panel;
+    }
+    
+    /**
+     * Get the surface holder
+     * @return The surface holder reference object
+     */
+    private SurfaceHolder getHolder()
+    {
+    	return this.holder;
     }
 }
