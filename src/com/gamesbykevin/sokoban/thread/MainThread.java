@@ -33,6 +33,11 @@ public class MainThread extends Thread
     private Canvas canvas;
     
     /**
+     * Default time to sleep our thread when paused
+     */
+    private static final long DEFAULT_SLEEP = 250;
+    
+    /**
      * When the game is terminated and recycling variables, <br>
      * this is the maximum number of attempts to stop the thread
      */
@@ -72,7 +77,13 @@ public class MainThread extends Thread
             {
             	//if the game is paused we won't continue
             	if (isPaused())
+            	{
+            		//sleep for a default time
+            		sleep(DEFAULT_SLEEP);
+            		
+            		//we are paused so we can't continue
             		continue;
+            	}
             	
                 //get the start time of this update
                 final long startTime = System.nanoTime();

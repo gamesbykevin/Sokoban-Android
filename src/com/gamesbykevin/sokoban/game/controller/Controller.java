@@ -107,58 +107,61 @@ public class Controller implements IController
      */
     public boolean update(final MotionEvent event, final float x, final float y) throws Exception
     {
-        //check if the touch screen was released
-        if (event.getAction() == MotionEvent.ACTION_UP)
-        {
-            //check if the player hit the controller
-            if (buttons.get(Assets.ImageGameKey.Pause).contains(x, y))
-            {
-                //change the state to paused
-                getGame().getScreen().setState(ScreenManager.State.Paused);
-                
-                //event was applied
-                return true;
-            }
-            else if (buttons.get(Assets.ImageGameKey.Exit).contains(x, y))
-            {
-                //change to the exit confirm screen
-                getGame().getScreen().setState(ScreenManager.State.Exit);
-                
-                //event was applied
-                return true;
-            }
-            else if (buttons.get(Assets.ImageGameKey.SoundOn).contains(x, y))
-            {
-                //flip the audio setting
-                Audio.setAudioEnabled(!Audio.isAudioEnabled());
-
-                //make sure the correct button is showing
-                if (Audio.isAudioEnabled())
-                {
-                    //play song
-                    Audio.play(Assets.AudioGameKey.Music, true);
-                }
-                else
-                {
-                    //if audio is not enabled, stop all sound
-                    Audio.stop();
-                }
-                
-                //event was applied
-                return true;
-            }
-            else if  (buttons.get(Assets.ImageGameKey.Reset).contains(x, y))
-            {
-            	//reset current level
-            	getGame().flagLevelReset();
-                
-                //event was applied
-                return true;
-            }
-        }
-        
-        //no event was applied
-        return false;
+    	//check if there was a change
+    	boolean change = false;
+    	
+    	//track the motion events
+    	if (event.getAction() == MotionEvent.ACTION_UP)
+    	{
+    		//check each button in our list
+    		for (Button button : buttons.values())
+    		{
+    			if (button != null && button.isVisible() && button.contains(x, y))
+    			{
+    				if (button.isPressed())
+    				{
+	    				//if contained within the coordinates flag released true
+						button.setReleased(true);
+						
+						//flag change true
+						change = true;
+    				}
+    				else
+    				{
+    					//if this button wasn't pressed previous, reset
+    					reset();
+    				}
+    			}
+    			else
+    			{
+    				//else flag released false
+					button.setReleased(false);
+    			}
+    		}
+    	}
+    	else if (event.getAction() == MotionEvent.ACTION_DOWN)
+    	{
+    		//check each button in our list
+    		for (Button button : buttons.values())
+    		{
+    			if (button != null && button.isVisible() && button.contains(x, y))
+    			{
+    				//if contained within the coordinates flag pressed true
+					button.setPressed(true);
+					
+					//flag change true
+					change = true;
+    			}
+    			else
+    			{
+    				//else flag pressed false
+    				button.setPressed(false);
+    			}
+    		}
+    	}
+    	
+    	//return if any change was made
+    	return change;
     }
     
     @Override
@@ -169,6 +172,80 @@ public class Controller implements IController
 	        //determine which button is displayed
 	        buttons.get(Assets.ImageGameKey.SoundOn).setVisible(Audio.isAudioEnabled());
 	        buttons.get(Assets.ImageGameKey.SoundOff).setVisible(!Audio.isAudioEnabled());
+	        
+	        //reset all buttons
+	        for (Button button : buttons.values())
+	        {
+	        	if (button != null)
+	        	{
+	        		button.setPressed(false);
+	        		button.setReleased(false);
+	        	}
+	        }
+    	}
+    }
+    
+    /**
+     * Determined what button was pressed
+     */
+    public void update() throws Exception
+    {
+    	//we can't continue if the list is null
+    	if (buttons == null)
+    		return;
+    	
+    	//check each button to see what changes
+    	for (Assets.ImageGameKey key : buttons.keySet())
+    	{
+    		//get the current button
+    		Button button = buttons.get(key);
+    		
+    		//if this button has been pressed and released
+    		if (button.isPressed() && button.isReleased())
+    		{
+    			//determine next steps
+    			switch (key)
+    			{
+	    			case Pause:
+	                    //change the state to paused
+	                    getGame().getScreen().setState(ScreenManager.State.Paused);
+	    				break;
+	    				
+	    			case Exit:
+	                    //change to the exit confirm screen
+	                    getGame().getScreen().setState(ScreenManager.State.Exit);
+	    				break;
+	    				
+	    			case SoundOn:
+	    			case SoundOff:
+	                    //flip the audio setting
+	                    Audio.setAudioEnabled(!Audio.isAudioEnabled());
+
+	                    //make sure the correct button is showing
+	                    if (Audio.isAudioEnabled())
+	                    {
+	                        //play song
+	                        Audio.play(Assets.AudioGameKey.Music, true);
+	                    }
+	                    else
+	                    {
+	                        //if audio is not enabled, stop all sound
+	                        Audio.stop();
+	                    }
+	    				break;
+	    				
+	    			case Reset:
+	                	//reset current level
+	                	getGame().flagLevelReset();
+	    				break;
+    			
+	    			default:
+	    				throw new Exception("Key is not handled here: " + key.toString());
+    			}
+    			
+    			//reset all buttons
+    			reset();
+    		}
     	}
     }
     

@@ -24,6 +24,11 @@ public interface IController extends Disposable
     public boolean update(final MotionEvent event, final float x, final float y) throws Exception;
     
     /**
+     * Common logic to update the controller
+     */
+    public void update() throws Exception;
+    
+    /**
      * Render our controller
      * @param canvas Object to write pixels to
      * @throws Exception

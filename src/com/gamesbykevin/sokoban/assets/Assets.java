@@ -109,8 +109,12 @@ public class Assets
         Easy_D("Easy D"),
         Medium_A("Medium A"),
         Medium_B("Medium B"),
+        Medium_C("Medium C"),
+        Medium_D("Medium D"),
         Hard_A("Hard A"),
-        Hard_B("Hard B");
+        Hard_B("Hard B"),
+        Hard_C("Hard C"),
+        Hard_D("Hard D");
     	
     	private final String desc;
     	

@@ -54,10 +54,15 @@ public final class Game implements IGame
     private static final float DEFAULT_TEXT_SIZE = 14f;
 
     //the length to vibrate the phone
-    private static final long VIBRATE_DURATION = 500;
+    private static final long VIBRATE_DURATION = 750;
     
     //do we reset the current level
     private boolean levelReset = false;
+    
+    /**
+     * The default length you have to move your finger in order to trigger the player to move
+     */
+    private static double SWIPE_LENGTH = .5;
     
     public Game(final ScreenManager screen) throws Exception
     {
@@ -248,51 +253,61 @@ public final class Game implements IGame
                 }
                 else if (event.getAction() == MotionEvent.ACTION_UP)
                 {
-                    //make sure we have selected the player
-                    if (getPlayer().isSelected())
+                	//if the player wasn't selected previous, we can't continue
+                	if (!getPlayer().isSelected())
+                		return;
+                	
+                    //make sure the player is already at their assigned destination before moving again
+                    if (getPlayer().hasTarget())
                     {
-                        //make sure the player is already at the destination before moving again
-                        if (getPlayer().hasTarget())
+                        //locate new location
+                        double col = LevelHelper.getCol(getLevels().getLevel(), x);
+                        double row = LevelHelper.getRow(getLevels().getLevel(), y);
+                        
+                        //calculate the difference from the previous location
+                        double differenceHorizontal = (start.getCol() > col) ? start.getCol() - col : col - start.getCol();
+                        double differenceVertical = (start.getRow() > row) ? start.getRow() - row : row - start.getRow();
+                        
+                        //if we haven't swiped at least the distance of 1 cell, don't continue
+                        if (differenceHorizontal < SWIPE_LENGTH && differenceVertical < SWIPE_LENGTH)
                         {
-                            //locate new location
-                            double col = LevelHelper.getCol(getLevels().getLevel(), x);
-                            double row = LevelHelper.getRow(getLevels().getLevel(), y);
-                            
-                            //calculate the difference from the previous location
-                            double differenceHorizontal = (start.getCol() > col) ? start.getCol() - col : col - start.getCol();
-                            double differenceVertical = (start.getRow() > row) ? start.getRow() - row : row - start.getRow();
-                            
-                            //the greater different will determine the direction
-                            if (differenceHorizontal > differenceVertical)
+                        	//un-select the player
+                        	getPlayer().setSelected(false);
+                        	
+                        	//no need to continue
+                        	return;
+                        }
+                        
+                        //the greater different will determine the direction
+                        if (differenceHorizontal > differenceVertical)
+                        {
+                            if (start.getCol() > col)
                             {
-                                if (start.getCol() > col)
-                                {
-                                    //assign the player destination
-                                    getPlayer().setTarget(getPlayer().getCol() - 1, getPlayer().getRow());
-                                }
-                                else
-                                {
-                                    //assign the player destination
-                                    getPlayer().setTarget(getPlayer().getCol() + 1, getPlayer().getRow());
-                                }
+                                //assign the player destination
+                                getPlayer().setTarget(getPlayer().getCol() - 1, getPlayer().getRow());
                             }
                             else
                             {
-                                if (start.getRow() > row)
-                                {
-                                    //assign the player destination
-                                    getPlayer().setTarget(getPlayer().getCol(), getPlayer().getRow() - 1);
-                                }
-                                else
-                                {
-                                    //assign the player destination
-                                    getPlayer().setTarget(getPlayer().getCol(), getPlayer().getRow() + 1);
-                                }
+                                //assign the player destination
+                                getPlayer().setTarget(getPlayer().getCol() + 1, getPlayer().getRow());
                             }
-                            
-                            //calculate the targets
-                            PlayerHelper.calculateTargets(getPlayer(), getLevels().getLevel());
                         }
+                        else
+                        {
+                            if (start.getRow() > row)
+                            {
+                                //assign the player destination
+                                getPlayer().setTarget(getPlayer().getCol(), getPlayer().getRow() - 1);
+                            }
+                            else
+                            {
+                                //assign the player destination
+                                getPlayer().setTarget(getPlayer().getCol(), getPlayer().getRow() + 1);
+                            }
+                        }
+                        
+                        //calculate the targets
+                        PlayerHelper.calculateTargets(getPlayer(), getLevels().getLevel());
                     }
                 }
             }
@@ -325,6 +340,9 @@ public final class Game implements IGame
     		
     		//reset the player to the start position
     		getPlayer().reset(getLevels().getLevel());
+    		
+    		//reset the controller
+    		getController().reset();
     		
     		//no need to continue
     		return;
@@ -376,7 +394,11 @@ public final class Game implements IGame
                 }
                 else
                 {
+                	//update block location
                     getLevels().getLevel().update();
+                    
+                    //update the controller
+                    getController().update();
                 }
             }
 
