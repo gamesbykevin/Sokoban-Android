@@ -241,10 +241,10 @@ public class OptionsScreen implements Screen, Disposable
     }
     
     @Override
-    public boolean update(final MotionEvent event, final float x, final float y) throws Exception
+    public boolean update(final int action, final float x, final float y) throws Exception
     {
     	//we only want motion event up
-    	if (event.getAction() != MotionEvent.ACTION_UP)
+    	if (action != MotionEvent.ACTION_UP)
     		return true;
     	
         if (buttons != null)

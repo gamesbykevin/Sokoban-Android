@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import com.gamesbykevin.androidframework.base.Cell;
 import com.gamesbykevin.androidframework.resources.Font;
 import com.gamesbykevin.androidframework.text.TimeFormat;
+import com.gamesbykevin.sokoban.ai.AI;
 import com.gamesbykevin.sokoban.assets.Assets;
 import com.gamesbykevin.sokoban.game.controller.Controller;
 import com.gamesbykevin.sokoban.level.LevelHelper;
@@ -18,6 +19,7 @@ import com.gamesbykevin.sokoban.player.Player;
 import com.gamesbykevin.sokoban.player.PlayerHelper;
 import com.gamesbykevin.sokoban.screen.ScreenManager;
 import com.gamesbykevin.sokoban.storage.scorecard.ScoreCard;
+import com.gamesbykevin.sokoban.thread.MainThread;
 
 /**
  * The main game logic will happen here
@@ -45,6 +47,9 @@ public final class Game implements IGame
     
     //this is used to move the player
     private Cell start;
+    
+    //the ai used to solve the level
+    private AI ai;
     
     //the location where we display text when selecting level
     private static final int LEVEL_START_TEXT_X = 96;
@@ -80,6 +85,18 @@ public final class Game implements IGame
         
         //create new controller
         this.controller = new Controller(this);
+        
+        //create new artificial intelligence object
+        this.ai = new AI();
+    }
+    
+    /**
+     * The ai object
+     * @return The artificial intelligence object to solve the puzzle
+     */
+    private AI getAI()
+    {
+    	return this.ai;
     }
     
     /**
@@ -216,7 +233,7 @@ public final class Game implements IGame
      * @param y (y-coordinate)
      * @throws Exception
      */
-    public void update(final MotionEvent event, final float x, final float y) throws Exception
+    public void update(final int action, final float x, final float y) throws Exception
     {
     	//if we are resetting the level we can't continue
     	if (hasLevelReset())
@@ -224,7 +241,7 @@ public final class Game implements IGame
     	
         if (!getLevels().getLevelSelect().hasSelection())
         {
-            if (event.getAction() == MotionEvent.ACTION_UP)
+            if (action == MotionEvent.ACTION_UP)
             {
                 //mark the selection to be checked
                 getLevels().getLevelSelect().setCheck((int)x, (int)y);
@@ -233,9 +250,9 @@ public final class Game implements IGame
         else
         {
             //only update game if no controller buttons were clicked
-            if (!getController().update(event, x, y))
+            if (!getController().update(action, x, y))
             {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                if (action == MotionEvent.ACTION_DOWN)
                 {
                     //check that we haven't selected the player yet
                     if (!getPlayer().isSelected())
@@ -251,7 +268,7 @@ public final class Game implements IGame
                         }
                     }
                 }
-                else if (event.getAction() == MotionEvent.ACTION_UP)
+                else if (action == MotionEvent.ACTION_UP)
                 {
                 	//if the player wasn't selected previous, we can't continue
                 	if (!getPlayer().isSelected())
@@ -399,6 +416,13 @@ public final class Game implements IGame
                     
                     //update the controller
                     getController().update();
+                    
+                    //only update the ai if debugging
+                    if (MainThread.DEBUG)
+                    {
+	                    //update the ai
+	                    getAI().update(getPlayer(), getLevels().getLevel());
+                    }
                 }
             }
 

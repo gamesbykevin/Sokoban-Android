@@ -46,6 +46,11 @@ public class Assets
     private static final String DIRECTORY_TEXT = "text";
     
     /**
+     * The directory where our text files containing the ai instructions are kept
+     */
+    private static final String DIRECTORY_TEXT_SOLVED = "solved";
+    
+    /**
      * The different fonts used in our game.<br>
      * Order these according to the file name in the "font" assets folder.
      */
@@ -129,6 +134,11 @@ public class Assets
     	}
     }
     
+    public enum TextAiInstructionsKey
+    {
+    	SOLVED_EASY_B_170
+    }
+    
     /**
      * The key of each sound in our game.<br>
      * Order these according to the file name in the "audio" assets folder.
@@ -176,6 +186,9 @@ public class Assets
         
         //load all text files
         Files.load(activity, TextKey.values(), DIRECTORY_TEXT, true);
+        
+        //load the text files containing the ai instructions to solve a level
+        Files.load(activity, TextAiInstructionsKey.values(), DIRECTORY_TEXT_SOLVED, true);
     }
     
     /**

@@ -189,13 +189,13 @@ public class MenuScreen implements Screen, Disposable
     }
     
     @Override
-    public boolean update(final MotionEvent event, final float x, final float y) throws Exception
+    public boolean update(final int action, final float x, final float y) throws Exception
     {
         //if the game is to reset, don't continue
         if (reset)
             return false;
         
-        if (event.getAction() == MotionEvent.ACTION_UP)
+        if (action == MotionEvent.ACTION_UP)
         {
         	//check every button
         	for (ButtonKey key : ButtonKey.values())

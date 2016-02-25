@@ -105,13 +105,13 @@ public class Controller implements IController
      * @return true if motion event was applied, false otherwise
      * @throws Exception
      */
-    public boolean update(final MotionEvent event, final float x, final float y) throws Exception
+    public boolean update(final int action, final float x, final float y) throws Exception
     {
     	//check if there was a change
     	boolean change = false;
     	
     	//track the motion events
-    	if (event.getAction() == MotionEvent.ACTION_UP)
+    	if (action == MotionEvent.ACTION_UP)
     	{
     		//check each button in our list
     		for (Button button : buttons.values())
@@ -139,7 +139,7 @@ public class Controller implements IController
     			}
     		}
     	}
-    	else if (event.getAction() == MotionEvent.ACTION_DOWN)
+    	else if (action == MotionEvent.ACTION_DOWN)
     	{
     		//check each button in our list
     		for (Button button : buttons.values())

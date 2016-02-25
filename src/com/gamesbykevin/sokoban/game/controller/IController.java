@@ -1,8 +1,6 @@
 package com.gamesbykevin.sokoban.game.controller;
 
 import android.graphics.Canvas;
-import android.view.MotionEvent;
-
 import com.gamesbykevin.androidframework.resources.Disposable;
 
 /**
@@ -21,7 +19,7 @@ public interface IController extends Disposable
      * @throws Exception
      * @return true if motion event was applied, false otherwise
      */
-    public boolean update(final MotionEvent event, final float x, final float y) throws Exception;
+    public boolean update(final int action, final float x, final float y) throws Exception;
     
     /**
      * Common logic to update the controller

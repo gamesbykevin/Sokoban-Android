@@ -186,7 +186,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Di
                 }
                 
                 //update the screen/game etc.. with the specified motion events
-                return getScreen().update(event, x, y);
+                return getScreen().update(event.getActionMasked(), x, y);
             }
         }
         catch (Exception e)
