@@ -1,5 +1,7 @@
 package com.gamesbykevin.sokoban.ai;
 
+import java.util.List;
+
 import com.gamesbykevin.androidframework.resources.Files;
 import com.gamesbykevin.sokoban.assets.Assets;
 import com.gamesbykevin.sokoban.level.Level;
@@ -12,7 +14,7 @@ import com.gamesbykevin.sokoban.player.PlayerHelper;
 public class AI 
 {
 	//list of instructions to follow
-	private final String instructions;
+	private String instructions = "";
 
 	//the position of the instructions String
 	private int index = 0;
@@ -38,12 +40,29 @@ public class AI
 	private static final String UP = "U";
 	
 	/**
+	 * The key of the level we want to solve
+	 */
+	private static final Assets.TextAiInstructionsKey KEY = Assets.TextAiInstructionsKey.SOLVED_EASY_C_8; 
+	
+	/**
 	 * Create the ai to solve the level
 	 */
 	public AI() 
 	{
-		//load text file and store instructions, assuming all instructions are contained on a single line
-		instructions = Files.getText(Assets.TextAiInstructionsKey.SOLVED_EASY_B_170).getLines().get(0);
+		//get all the lines in the text file
+		List<String> lines = Files.getText(KEY).getLines();
+		
+		//start out blank
+		instructions = "";
+		
+		for (String line : lines)
+		{
+			if (line == null)
+				continue;
+			
+			//add string
+			instructions += line.trim();
+		}
 	}
 
 	public void update(final Player player, final Level level)
