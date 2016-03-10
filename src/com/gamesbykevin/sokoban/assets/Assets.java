@@ -136,6 +136,7 @@ public class Assets
     
     public enum TextAiInstructionsKey
     {
+    	SOLVED_EASY_A_28,
     	SOLVED_EASY_B_170,
     	SOLVED_EASY_C_8
     }

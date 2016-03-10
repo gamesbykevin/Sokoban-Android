@@ -42,7 +42,7 @@ public class AI
 	/**
 	 * The key of the level we want to solve
 	 */
-	private static final Assets.TextAiInstructionsKey KEY = Assets.TextAiInstructionsKey.SOLVED_EASY_C_8; 
+	private static final Assets.TextAiInstructionsKey KEY = Assets.TextAiInstructionsKey.SOLVED_EASY_A_28; 
 	
 	/**
 	 * Create the ai to solve the level
