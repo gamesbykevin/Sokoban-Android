@@ -42,7 +42,7 @@ public class AI
 	/**
 	 * The key of the level we want to solve
 	 */
-	private static final Assets.TextAiInstructionsKey KEY = Assets.TextAiInstructionsKey.SOLVED_EASY_A_28; 
+	private static final Assets.TextAiInstructionsKey KEY = Assets.TextAiInstructionsKey.SOLVED_EASY_A_58; 
 	
 	/**
 	 * Create the ai to solve the level
@@ -77,6 +77,10 @@ public class AI
 			//make sure the player is at the current target as well
 			if (player.hasTarget())
 			{
+				//make sure blocks aren't moving
+				if (!level.hasDestination())
+					return;
+				
 				//flag selected true
 				player.setSelected(true);
 				

@@ -175,6 +175,24 @@ public final class Level implements Disposable, ILevel
     }
     
     /**
+     * Do we have the destination?
+     * @return true if all blocks are at their assigned place, false otherwise
+     */
+    public boolean hasDestination()
+    {
+        //check each block
+        for (Target block : getCurrent())
+        {
+        	//if at least 1 block is not at the destination return false
+            if (!block.hasDestination())
+            	return false;
+        }
+    	
+        //all blocks are found to be at their destination
+        return true;
+    }
+    
+    /**
      * Update the location of the blocks if not at their target
      */
     public void update()
