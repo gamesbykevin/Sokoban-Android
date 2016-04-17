@@ -138,6 +138,7 @@ public class Assets
     {
     	SOLVED_EASY_A_28,
     	SOLVED_EASY_A_58,
+    	SOLVED_HARD_A_1,
     	SOLVED_EASY_B_170,
     	SOLVED_EASY_C_8
     }
