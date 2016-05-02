@@ -140,6 +140,11 @@ public class Assets
     	SOLVED_EASY_A_58,
     	SOLVED_HARD_A_1,
     	SOLVED_EASY_B_170,
+    	SOLVED_MEDIUM_B_1, 
+    	SOLVED_MEDIUM_B_2, 
+    	SOLVED_MEDIUM_B_3, 
+    	SOLVED_MEDIUM_B_4, 
+    	SOLVED_MEDIUM_B_5, 
     	SOLVED_EASY_C_8,
     	SOLVED_HARD_C_1
     }
