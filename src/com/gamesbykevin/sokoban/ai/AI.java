@@ -7,6 +7,7 @@ import com.gamesbykevin.sokoban.assets.Assets;
 import com.gamesbykevin.sokoban.level.Level;
 import com.gamesbykevin.sokoban.player.Player;
 import com.gamesbykevin.sokoban.player.PlayerHelper;
+import com.gamesbykevin.sokoban.thread.MainThread;
 
 /**
  * What he ai class will do is analyze a text file and move the player according to those instructions
@@ -42,7 +43,7 @@ public class AI
 	/**
 	 * The key of the level we want to solve
 	 */
-	private static final Assets.TextAiInstructionsKey KEY = Assets.TextAiInstructionsKey.SOLVED_MEDIUM_B_5; 
+	private static final Assets.TextAiInstructionsKey KEY = Assets.TextAiInstructionsKey.SOLVED_MEDIUM_B_14; 
 	
 	/**
 	 * Create the ai to solve the level
@@ -63,6 +64,9 @@ public class AI
 			//add string
 			instructions += line.trim();
 		}
+		
+		if (MainThread.DEBUG)
+			System.out.println("Key=" + KEY.toString() + ",Steps=" + instructions);
 	}
 
 	public void update(final Player player, final Level level)
