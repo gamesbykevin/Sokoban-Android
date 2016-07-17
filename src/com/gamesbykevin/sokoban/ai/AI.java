@@ -40,35 +40,50 @@ public class AI
 	 */
 	private static final String UP = "U";
 	
-	/**
-	 * The key of the level we want to solve
-	 */
-	private static final Assets.TextAiInstructionsKey KEY = Assets.TextAiInstructionsKey.SOLVED_EASY_A_143;
+	//the list of solutions for each level
+	private List<String> levels;
 	
 	/**
 	 * Create the ai to solve the level
 	 */
 	public AI() 
 	{
-		//get all the lines in the text file
-		List<String> lines = Files.getText(KEY).getLines();
+		//set our list of levels
+		this.setLevels(Assets.TextAiInstructionsKey.SOLVED_EASY_A);
 		
-		//start out blank
-		instructions = "";
-		
-		for (String line : lines)
-		{
-			if (line == null)
-				continue;
-			
-			//add string
-			instructions += line.trim();
-		}
-		
-		if (MainThread.DEBUG)
-			System.out.println("Key=" + KEY.toString() + ",Steps=" + instructions);
+		//start at the beginning
+		this.reset(0);
 	}
 
+	/**
+	 * Assign the levels we want to solve
+	 * @param key The unique identifier of the list of levels we want to solve
+	 */
+	public final void setLevels(Assets.TextAiInstructionsKey key)
+	{
+		//get all the lines in the text file
+		this.levels = Files.getText(key).getLines();
+	}
+	
+	/**
+	 * Reset the ai for the specified level
+	 * @param levelIndex The desired level to solve
+	 */
+	public final void reset(final int levelIndex)
+	{
+		//set the text position back at 0
+		this.index = 0;
+		
+		//get the data for this level
+		String[] data = this.levels.get(levelIndex).split(" ");
+		
+		//the instructions are always the last piece of data
+		this.instructions = data[data.length - 1].trim();
+		
+		if (MainThread.DEBUG)
+			System.out.println("Index=" + index + ",Steps=" + instructions);
+	}
+	
 	public void update(final Player player, final Level level)
 	{
 		//stay inbounds
@@ -110,7 +125,7 @@ public class AI
                 PlayerHelper.calculateTargets(player, level);
                 
                 //move to the next instruction
-                index++;
+                this.index++;
 			}
 		}
 	}

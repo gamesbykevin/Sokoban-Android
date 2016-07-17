@@ -17,6 +17,7 @@ import com.gamesbykevin.sokoban.level.LevelHelper;
 import com.gamesbykevin.sokoban.level.Levels;
 import com.gamesbykevin.sokoban.player.Player;
 import com.gamesbykevin.sokoban.player.PlayerHelper;
+import com.gamesbykevin.sokoban.screen.OptionsScreen;
 import com.gamesbykevin.sokoban.screen.ScreenManager;
 import com.gamesbykevin.sokoban.storage.scorecard.ScoreCard;
 import com.gamesbykevin.sokoban.thread.MainThread;
@@ -135,10 +136,10 @@ public final class Game implements IGame
     {
     	//create the player if not exists
         if (getPlayer() == null)
-            player = new Player();
+        	this.player = new Player();
         
         //create score card
-    	scoreCard = new ScoreCard(this, getScreen().getPanel().getActivity(), key.toString() + " ");
+    	this.scoreCard = new ScoreCard(this, getScreen().getPanel().getActivity(), key.toString() + " ");
         
         //create new levels object
         this.levels = new Levels(key);
@@ -443,6 +444,40 @@ public final class Game implements IGame
         		
         		//reset the player position
                 getPlayer().reset(getLevels().getLevel());
+                
+                //if debugging set/reset the ai
+                if (MainThread.DEBUG)
+                {
+                	//determine which list of solved levels we need to use
+                	switch (getScreen().getScreenOptions().getIndex(OptionsScreen.ButtonKey.Difficulty))
+                	{
+	                	case 0:
+	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_EASY_A);
+	                		break;
+	                		
+	                	case 1:
+	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_EASY_B);
+	                		break;
+	                		
+	                	case 2:
+	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_EASY_C);
+	                		break;
+	                		
+	                	case 3:
+	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_EASY_D);
+	                		break;
+	                		
+	                	case 4:
+	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_MEDIUM_A);
+	                		break;
+	                		
+                		default:
+	                		throw new Exception("Solution is missing here " + getScreen().getScreenOptions().getIndex(OptionsScreen.ButtonKey.Difficulty));
+                	}
+                	
+                	//assign the level index based on the level selection
+                	getAI().reset(getLevels().getLevelSelect().getLevelIndex());
+                }
         	}
         }
     }

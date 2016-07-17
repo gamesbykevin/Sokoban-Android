@@ -136,34 +136,12 @@ public class Assets
     
     public enum TextAiInstructionsKey
     {
-    	SOLVED_EASY_A_28,
-    	SOLVED_EASY_A_58,
-    	SOLVED_EASY_A_143,
-    	SOLVED_HARD_A_1,
-    	SOLVED_EASY_B_079,
-    	SOLVED_EASY_B_170,
-    	SOLVED_MEDIUM_B_1, 
-    	SOLVED_MEDIUM_B_2, 
-    	SOLVED_MEDIUM_B_3, 
-    	SOLVED_MEDIUM_B_4, 
-    	SOLVED_MEDIUM_B_5, 
-    	SOLVED_MEDIUM_B_6, 
-    	SOLVED_MEDIUM_B_7, 
-    	SOLVED_MEDIUM_B_8, 
-    	SOLVED_MEDIUM_B_9, 
-    	SOLVED_MEDIUM_B_10, 
-    	SOLVED_MEDIUM_B_11, 
-    	SOLVED_MEDIUM_B_12, 
-    	SOLVED_MEDIUM_B_13, 
-    	SOLVED_MEDIUM_B_14, 
-    	SOLVED_MEDIUM_B_15, 
-    	SOLVED_MEDIUM_B_16, 
-    	SOLVED_MEDIUM_B_17, 
-    	SOLVED_MEDIUM_B_18, 
-    	SOLVED_MEDIUM_B_19, 
-    	SOLVED_MEDIUM_B_20, 
-    	SOLVED_EASY_C_8,
-    	SOLVED_HARD_C_1
+    	SOLVED_EASY_A, 
+    	SOLVED_EASY_B, 
+    	SOLVED_EASY_C, 
+    	SOLVED_EASY_D, 
+    	SOLVED_MEDIUM_A, 
+    	
     }
     
     /**
