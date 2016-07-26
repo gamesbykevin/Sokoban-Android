@@ -136,12 +136,9 @@ public class Assets
     
     public enum TextAiInstructionsKey
     {
-    	SOLVED_EASY_A, 
-    	SOLVED_EASY_B, 
-    	SOLVED_EASY_C, 
-    	SOLVED_EASY_D, 
-    	SOLVED_MEDIUM_A, 
-    	
+    	SOLVED_EASY_A, SOLVED_EASY_B, SOLVED_EASY_C, SOLVED_EASY_D, 
+    	SOLVED_MEDIUM_A, SOLVED_MEDIUM_B, SOLVED_MEDIUM_C, SOLVED_MEDIUM_D, 
+    	SOLVED_HARD_A, SOLVED_HARD_B, SOLVED_HARD_C, SOLVED_HARD_D 
     }
     
     /**

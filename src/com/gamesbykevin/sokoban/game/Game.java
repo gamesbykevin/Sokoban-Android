@@ -471,6 +471,34 @@ public final class Game implements IGame
 	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_MEDIUM_A);
 	                		break;
 	                		
+	                	case 5:
+	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_MEDIUM_B);
+	                		break;
+	                		
+	                	case 6:
+	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_MEDIUM_C);
+	                		break;
+	                		
+	                	case 7:
+	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_MEDIUM_D);
+	                		break;
+	                		
+	                	case 8:
+	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_HARD_A);
+	                		break;
+	                		
+	                	case 9:
+	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_HARD_B);
+	                		break;
+	                		
+	                	case 10:
+	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_HARD_C);
+	                		break;
+	                		
+	                	case 11:
+	                		getAI().setLevels(Assets.TextAiInstructionsKey.SOLVED_HARD_D);
+	                		break;
+	                		
                 		default:
 	                		throw new Exception("Solution is missing here " + getScreen().getScreenOptions().getIndex(OptionsScreen.ButtonKey.Difficulty));
                 	}
