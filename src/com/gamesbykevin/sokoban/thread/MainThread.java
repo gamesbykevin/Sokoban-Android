@@ -15,7 +15,7 @@ public class MainThread extends Thread
     /**
      * Is debug mode enabled?
      */
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     
     //the assigned frames per second for this game
     public static final int FPS = 30;

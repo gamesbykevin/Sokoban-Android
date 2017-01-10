@@ -74,10 +74,35 @@ public class MenuScreen implements Screen, Disposable
      */
     public static final int ICON_DIMENSION = 72;
     
+    /**
+     * x-coordinate for the instructions icon
+     */
+    public static final int ICON_X_INSTRUCTIONS = (int)((GamePanel.WIDTH * .25) - ((GamePanel.WIDTH * .25) / 2) - (MenuScreen.ICON_DIMENSION / 2));
+    
+    /**
+     * x-coordinate for the facebook icon
+     */
+    public static final int ICON_X_FACEBOOK = (int)((GamePanel.WIDTH * .50) - ((GamePanel.WIDTH * .25) / 2) - (MenuScreen.ICON_DIMENSION / 2));
+    
+    /**
+     * x-coordinate for the twitter icon
+     */
+    public static final int ICON_X_TWITTER = (int)((GamePanel.WIDTH * .75) - ((GamePanel.WIDTH * .25) / 2) - (MenuScreen.ICON_DIMENSION / 2));
+    
+    /**
+     * x-coordinate for the youtube icon
+     */
+    public static final int ICON_X_YOUTUBE = (int)((GamePanel.WIDTH * 1.0) - ((GamePanel.WIDTH * .25) / 2) - (MenuScreen.ICON_DIMENSION / 2));
+    
+    /**
+     * y-coordinate for the icons
+     */
+    public static final int ICON_Y = GamePanel.HEIGHT - (int)(MenuScreen.ICON_DIMENSION * 1.25);
+    
     //Different buttons on the screen
     public enum ButtonKey
     {
-    	Start, Settings, Rate, More, Exit, Instructions, Facebook, Twitter
+    	Start, Settings, Rate, More, Exit, Instructions, Facebook, Twitter, Youtube
     }
     
     public MenuScreen(final ScreenManager screen)
@@ -127,6 +152,7 @@ public class MenuScreen implements Screen, Disposable
 	        	case Instructions:
 	        	case Facebook:
 	        	case Twitter:
+	        	case Youtube:
                 	button.setWidth(ICON_DIMENSION);
                 	button.setHeight(ICON_DIMENSION);
                 	button.updateBounds();
@@ -164,19 +190,24 @@ public class MenuScreen implements Screen, Disposable
     private void addIcons()
     {
         Button tmp = new Button(Images.getImage(Assets.ImageMenuKey.Instructions));
-        tmp.setX(GamePanel.WIDTH - (ICON_DIMENSION * 4.5));
-        tmp.setY(GamePanel.HEIGHT - (ICON_DIMENSION * 1.25));
+        tmp.setX(ICON_X_INSTRUCTIONS);
+        tmp.setY(ICON_Y);
         buttons.put(ButtonKey.Instructions, tmp);
         
         tmp = new Button(Images.getImage(Assets.ImageMenuKey.Facebook));
-        tmp.setX(GamePanel.WIDTH - (ICON_DIMENSION * 3));
-        tmp.setY(GamePanel.HEIGHT - (ICON_DIMENSION * 1.25));
+        tmp.setX(ICON_X_FACEBOOK);
+        tmp.setY(ICON_Y);
         buttons.put(ButtonKey.Facebook, tmp);
         
         tmp = new Button(Images.getImage(Assets.ImageMenuKey.Twitter));
-        tmp.setX(GamePanel.WIDTH - (ICON_DIMENSION * 1.5));
-        tmp.setY(GamePanel.HEIGHT - (ICON_DIMENSION * 1.25));
+        tmp.setX(ICON_X_TWITTER);
+        tmp.setY(ICON_Y);
         buttons.put(ButtonKey.Twitter, tmp);
+        
+        tmp = new Button(Images.getImage(Assets.ImageMenuKey.Youtube));
+        tmp.setX(ICON_X_YOUTUBE);
+        tmp.setY(ICON_Y);
+        buttons.put(ButtonKey.Youtube, tmp);
     }
     
     /**
@@ -235,6 +266,16 @@ public class MenuScreen implements Screen, Disposable
 		                    
 		                    //go to instructions
 		                    this.screen.getPanel().getActivity().openWebpage(MainActivity.WEBPAGE_TWITTER_URL);
+		                    
+		                    //we do not request any additional events
+		                    return false;
+		        			
+		        		case Youtube:
+		                    //play sound effect
+		                    Audio.play(Assets.AudioMenuKey.Selection);
+		                    
+		                    //go to youtube
+		                    this.screen.getPanel().getActivity().openWebpage(MainActivity.WEBPAGE_YOUTUBE_URL);
 		                    
 		                    //we do not request any additional events
 		                    return false;
@@ -353,6 +394,7 @@ public class MenuScreen implements Screen, Disposable
 		        		case Instructions:
 		        		case Facebook:
 		        		case Twitter:
+		        		case Youtube:
 		        			button.render(canvas);
 		        			break;
 		        			

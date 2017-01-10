@@ -81,7 +81,8 @@ public class Assets
         Cancel, 
         Confirm,
         Splash,
-        Twitter
+        Twitter,
+        Youtube
     }
     
     /**
@@ -99,6 +100,8 @@ public class Assets
         Reset,
         SoundOff, 
         SoundOn, 
+        UndoDisabled,
+        UndoEnabled,
         Sprites
     }
     

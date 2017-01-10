@@ -14,7 +14,6 @@ import com.gamesbykevin.sokoban.screen.ScreenManager;
 import com.gamesbykevin.sokoban.screen.MenuScreen;
 import com.gamesbykevin.sokoban.storage.settings.Settings;
 import com.gamesbykevin.sokoban.assets.Assets;
-import com.gamesbykevin.sokoban.panel.GamePanel;
 
 import java.util.HashMap;
 
@@ -39,7 +38,7 @@ public class OptionsScreen implements Screen, Disposable
     //Different buttons on the screen
     public enum ButtonKey
     {
-    	Back, Sound, Vibrate, Difficulty, Instructions, Twitter, Facebook
+    	Back, Sound, Vibrate, Difficulty, Instructions, Twitter, Facebook, Youtube
     }
     
     public OptionsScreen(final ScreenManager screen)
@@ -86,6 +85,7 @@ public class OptionsScreen implements Screen, Disposable
 	        	case Instructions:
 	        	case Facebook:
 	        	case Twitter:
+	        	case Youtube:
                 	button.setWidth(MenuScreen.ICON_DIMENSION);
                 	button.setHeight(MenuScreen.ICON_DIMENSION);
                 	button.updateBounds();
@@ -110,19 +110,24 @@ public class OptionsScreen implements Screen, Disposable
     private void addIcons()
     {
         Button tmp = new Button(Images.getImage(Assets.ImageMenuKey.Instructions));
-        tmp.setX(GamePanel.WIDTH - (MenuScreen.ICON_DIMENSION * 4.5));
-        tmp.setY(GamePanel.HEIGHT - (MenuScreen.ICON_DIMENSION * 1.25));
+        tmp.setX(MenuScreen.ICON_X_INSTRUCTIONS);
+        tmp.setY(MenuScreen.ICON_Y);
         this.buttons.put(ButtonKey.Instructions, tmp);
         
         tmp = new Button(Images.getImage(Assets.ImageMenuKey.Facebook));
-        tmp.setX(GamePanel.WIDTH - (MenuScreen.ICON_DIMENSION * 3));
-        tmp.setY(GamePanel.HEIGHT - (MenuScreen.ICON_DIMENSION * 1.25));
+        tmp.setX(MenuScreen.ICON_X_FACEBOOK);
+        tmp.setY(MenuScreen.ICON_Y);
         this.buttons.put(ButtonKey.Facebook, tmp);
         
         tmp = new Button(Images.getImage(Assets.ImageMenuKey.Twitter));
-        tmp.setX(GamePanel.WIDTH - (MenuScreen.ICON_DIMENSION * 1.5));
-        tmp.setY(GamePanel.HEIGHT - (MenuScreen.ICON_DIMENSION * 1.25));
+        tmp.setX(MenuScreen.ICON_X_TWITTER);
+        tmp.setY(MenuScreen.ICON_Y);
         this.buttons.put(ButtonKey.Twitter, tmp);
+        
+        tmp = new Button(Images.getImage(Assets.ImageMenuKey.Youtube));
+        tmp.setX(MenuScreen.ICON_X_YOUTUBE);
+        tmp.setY(MenuScreen.ICON_Y);
+        this.buttons.put(ButtonKey.Youtube, tmp);
     }
     
     /**
@@ -226,6 +231,7 @@ public class OptionsScreen implements Screen, Disposable
 						case Instructions:
 						case Twitter:
 						case Facebook:
+						case Youtube:
 							break;
 							
 						default:
@@ -362,18 +368,27 @@ public class OptionsScreen implements Screen, Disposable
     	                //play sound effect
     	                Audio.play(Assets.AudioMenuKey.Selection);
     	                
-    	                //go to instructions
+    	                //go to twitter
     	                this.screen.getPanel().getActivity().openWebpage(MainActivity.WEBPAGE_TWITTER_URL);
     	                
     	                //we do not request any additional events
     	                return false;
     				
+    				case Youtube:
+    					
+    	                //play sound effect
+    	                Audio.play(Assets.AudioMenuKey.Selection);
+    	                
+    	                //go to youtube
+    	                this.screen.getPanel().getActivity().openWebpage(MainActivity.WEBPAGE_YOUTUBE_URL);
+    	                
+    	                //we do not request any additional events
+    	                return false;
+    	                
     				default:
                     	throw new Exception("Key not setup here: " + key);
 				}
         	}
-        	
-        	
         }
     	
         //return true
@@ -409,6 +424,7 @@ public class OptionsScreen implements Screen, Disposable
 	    			case Instructions:
 	    			case Facebook:
 	    			case Twitter:
+	    			case Youtube:
 	    				buttons.get(key).render(canvas);
 	    				break;
 	    				

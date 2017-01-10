@@ -32,12 +32,17 @@ public class MainActivity extends Activity
     /**
      * The face book url
      */
-    public static final String WEBPAGE_FACEBOOK_URL = "http://facebook.com/gamesbykevin";
+    public static final String WEBPAGE_FACEBOOK_URL = "https://facebook.com/gamesbykevin";
     
     /**
      * The twitter url
      */
-    public static final String WEBPAGE_TWITTER_URL = "http://twitter.com/gamesbykevin";
+    public static final String WEBPAGE_TWITTER_URL = "https://twitter.com/gamesbykevin";
+    
+    /**
+     * The youtube url
+     */
+    public static final String WEBPAGE_YOUTUBE_URL = "https://youtube.com/gamesbykevin";
     
     /**
      * Called when the activity is first created
