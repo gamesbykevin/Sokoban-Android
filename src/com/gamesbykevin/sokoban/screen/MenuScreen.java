@@ -34,17 +34,17 @@ public class MenuScreen implements Screen, Disposable
     /**
      * Button text to display to exit the game
      */
-    public static final String BUTTON_TEXT_EXIT_GAME = "Exit Game";
+    public static final String BUTTON_TEXT_EXIT_GAME = "Exit";
     
     /**
      * Button text to display to rate the game
      */
-    public static final String BUTTON_TEXT_RATE_APP = "Rate App";
+    public static final String BUTTON_TEXT_RATE_APP = "Rate";
     
     /**
      * Button text to display to start a new game
      */
-    public static final String BUTTON_TEXT_START_GAME = "Start Game";
+    public static final String BUTTON_TEXT_START_GAME = "Start";
     
     /**
      * Button text to display for the options
@@ -54,7 +54,7 @@ public class MenuScreen implements Screen, Disposable
     /**
      * Button text to display for more games
      */
-    public static final String BUTTON_TEXT_MORE_GAMES = "More Games";
+    public static final String BUTTON_TEXT_MORE_GAMES = "More";
     
     //start new game, and did we notify user
     private boolean reset = false, notify = false;

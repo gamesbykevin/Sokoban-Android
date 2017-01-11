@@ -34,6 +34,13 @@ public class Controller implements IController
     private final static int RESET_X = GamePanel.WIDTH - 64;
     private final static int RESET_Y = 0;
     
+    //location of undo button
+    private final static int UNDO_X = GamePanel.WIDTH - 64;
+    private final static int UNDO_Y = 96;
+    
+    //is the undo button enabled
+    private boolean enabled = false;
+    
     /**
      * Default Constructor
      * @param game Object game object reference
@@ -50,6 +57,8 @@ public class Controller implements IController
         tmp.add(Assets.ImageGameKey.Pause);
         tmp.add(Assets.ImageGameKey.Exit);
         tmp.add(Assets.ImageGameKey.Reset);
+        tmp.add(Assets.ImageGameKey.UndoEnabled);
+        tmp.add(Assets.ImageGameKey.UndoDisabled);
         
         //create new list of buttons
         this.buttons = new HashMap<Assets.ImageGameKey, Button>();
@@ -63,6 +72,12 @@ public class Controller implements IController
         //reset button
         this.buttons.get(Assets.ImageGameKey.Reset).setX(RESET_X);
         this.buttons.get(Assets.ImageGameKey.Reset).setY(RESET_Y);
+        
+        //undo button
+        this.buttons.get(Assets.ImageGameKey.UndoEnabled).setX(UNDO_X);
+        this.buttons.get(Assets.ImageGameKey.UndoEnabled).setY(UNDO_Y);
+        this.buttons.get(Assets.ImageGameKey.UndoDisabled).setX(UNDO_X);
+        this.buttons.get(Assets.ImageGameKey.UndoDisabled).setY(UNDO_Y);
         
         int x = 40;
         final int y = 710;
@@ -183,6 +198,9 @@ public class Controller implements IController
 	        	}
 	        }
     	}
+    	
+    	//disable the undo button
+    	setDisabled();
     }
     
     /**
@@ -239,6 +257,20 @@ public class Controller implements IController
 	                	getGame().flagLevelReset();
 	    				break;
     			
+	    			case UndoEnabled:
+	    			case UndoDisabled:
+	    				
+	    				//make sure the button is enabled
+	    				if (this.enabled)
+	    				{
+	    					//disable button
+	    					setDisabled();
+	    					
+	    					//undo the previous move
+	    					getGame().undo();
+	    				}
+	    				break;
+	    				
 	    			default:
 	    				throw new Exception("Key is not handled here: " + key.toString());
     			}
@@ -247,6 +279,22 @@ public class Controller implements IController
     			reset();
     		}
     	}
+    }
+    
+    /**
+     * Make the undo button enabled
+     */
+    public void setEnabled()
+    {
+    	this.enabled = true;
+    }
+    
+    /**
+     * Make the undo button disabled
+     */
+    public void setDisabled()
+    {
+    	this.enabled = false;
     }
     
     /**
@@ -286,6 +334,7 @@ public class Controller implements IController
             buttons.get(Assets.ImageGameKey.Pause).render(canvas);
             buttons.get(Assets.ImageGameKey.Exit).render(canvas);
             buttons.get(Assets.ImageGameKey.Reset).render(canvas);
+            buttons.get((enabled) ? Assets.ImageGameKey.UndoEnabled : Assets.ImageGameKey.UndoDisabled).render(canvas);
         }
     }
 }

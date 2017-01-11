@@ -146,7 +146,7 @@ public class OptionsScreen implements Screen, Disposable
         
         for (Assets.TextKey key : Assets.TextKey.values())
         {
-            button.addDescription("Skill: " + key.getDesc());
+            button.addDescription("Levels: " + key.getDesc());
         }
         
         button.setX(x);
@@ -157,7 +157,7 @@ public class OptionsScreen implements Screen, Disposable
     private void addButtonBack(final int x, final int y)
     {
         Button button = new Button(Images.getImage(Assets.ImageMenuKey.Button));
-        button.addDescription("Go  Back");
+        button.addDescription("Back");
         button.setX(x);
         button.setY(y);
         this.buttons.put(ButtonKey.Back, button);

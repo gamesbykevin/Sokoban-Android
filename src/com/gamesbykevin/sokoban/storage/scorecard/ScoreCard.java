@@ -62,7 +62,16 @@ public final class ScoreCard extends Internal
                 //get the information
                 final int level = Integer.parseInt(data[0]);
                 final int moves = Integer.parseInt(data[1]);
-                final long time = Long.parseLong(data[2]);
+                long time;
+                
+                try
+                {
+                	time = Long.parseLong(data[2]);
+                }
+                catch (Exception e)
+                {
+                	time = (long)Double.parseDouble(data[2]);
+                }
 
                 //load the score to our list
                 update(level, moves, time);

@@ -24,7 +24,7 @@ public class ExitScreen implements Screen, Disposable
     /**
      * Custom message displayed on screen
      */
-    private static final String MESSAGE = "Go back to menu?";
+    private static final String MESSAGE = "Go   back   to   menu?";
     
     //where our message is to be rendered
     private final int messageX, messageY;

@@ -210,10 +210,6 @@ public final class ScreenManager implements Screen, Disposable
         {
             //set the previous state
             getScreenPaused().setStatePrevious(getState());
-            
-            //if the player exists, stop the timer when paused
-            if (getScreenGame().getGame() != null && getScreenGame().getGame().getPlayer() != null)
-                getScreenGame().getGame().getPlayer().stopTimer();
         }
         else if (state == State.GameOver && getState() != State.Paused)
         {

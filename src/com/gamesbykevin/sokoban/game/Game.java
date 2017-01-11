@@ -57,7 +57,7 @@ public final class Game implements IGame
     private static final int LEVEL_START_TEXT_Y = 761;
     
     //default size of the moves and timer
-    private static final float DEFAULT_TEXT_SIZE = 14f;
+    private static final float DEFAULT_TEXT_SIZE = 18f;
 
     //the length to vibrate the phone
     private static final long VIBRATE_DURATION = 750;
@@ -326,6 +326,9 @@ public final class Game implements IGame
                         
                         //calculate the targets
                         PlayerHelper.calculateTargets(getPlayer(), getLevels().getLevel());
+                        
+                        //now that we set the targets, we can enable the undo button
+                        getController().setEnabled();
                     }
                 }
             }
@@ -335,6 +338,21 @@ public final class Game implements IGame
                 getPlayer().setSelected(false);
             }
         }
+    }
+    
+    /**
+     * Undo the previous move
+     */
+    public void undo()
+    {
+    	//undo the players previous move
+    	getPlayer().undo();
+    	
+    	//undo the blocks in the level as well
+    	getLevels().getLevel().undo();
+    	
+    	//update coordinates
+    	getPlayer().updateRenderCoordinates(getLevels().getLevel());
     }
     
     /**
@@ -378,7 +396,7 @@ public final class Game implements IGame
                 	final boolean result = getScorecard().update(
                 		getLevels().getLevelSelect().getLevelIndex(), 
                 		getPlayer().getMoves(), 
-                		getPlayer().getTime()
+                		(long)getPlayer().getTime()
                 	);
 
                 	//if an update was made update the level select screen
@@ -561,22 +579,32 @@ public final class Game implements IGame
                 if (getScorecard().hasScore())
                 {
                     canvas.drawText(
-                    	"Best Move - " + getScorecard().getScore().getMoves(), 
-                    	Player.PERSONAL_BEST_INFO_X, 
-                    	Player.PERSONAL_BEST_INFO_Y, 
-                    	paint
+                    	"Best", 
+                        Player.PERSONAL_BEST_INFO_X, 
+                        Player.PERSONAL_BEST_INFO_Y * 1, 
+                        paint
                     );
                     
                     canvas.drawText(
-                    	"Best Time - " + TimeFormat.getDescription(TimeFormat.FORMAT_1, getScorecard().getScore().getTime()), 
+                    	getScorecard().getScore().getMoves() + "", 
                     	Player.PERSONAL_BEST_INFO_X, 
                     	Player.PERSONAL_BEST_INFO_Y * 2, 
                     	paint
                     );
+                    
+                    canvas.drawText(
+                    	TimeFormat.getDescription(TimeFormat.FORMAT_3, (long) getScorecard().getScore().getTime()), 
+                    	Player.PERSONAL_BEST_INFO_X, 
+                    	Player.PERSONAL_BEST_INFO_Y * 3, 
+                    	paint
+                    );
                 }
                 
+                //render the current level etc...
+                canvas.drawText(getLevels().getLevelTracker().getLevelDescription(), Player.INFO_X, Player.INFO_Y, paint);
+                
                 //render player
-                getPlayer().render(canvas, getScreen().getPaint());
+                getPlayer().render(canvas, paint);
                 
                 //draw the game controller
                 getController().render(canvas);

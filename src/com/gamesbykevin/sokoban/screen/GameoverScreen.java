@@ -1,8 +1,6 @@
 package com.gamesbykevin.sokoban.screen;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.SparseArray;
 import android.view.MotionEvent;
@@ -10,7 +8,6 @@ import android.view.MotionEvent;
 import com.gamesbykevin.androidframework.awt.Button;
 import com.gamesbykevin.androidframework.resources.Audio;
 import com.gamesbykevin.androidframework.resources.Disposable;
-import com.gamesbykevin.androidframework.resources.Font;
 import com.gamesbykevin.androidframework.resources.Images;
 import com.gamesbykevin.androidframework.screen.Screen;
 import com.gamesbykevin.sokoban.screen.MenuScreen;
@@ -27,9 +24,6 @@ public class GameoverScreen implements Screen, Disposable
 {
     //our main screen reference
     private final ScreenManager screen;
-    
-    //object to paint message
-    private Paint paint;
     
     //the message to display
     private String message = "";
@@ -61,7 +55,7 @@ public class GameoverScreen implements Screen, Disposable
     /**
      * The text to display for level select
      */
-    private static final String BUTTON_TEXT_LEVEL_SELECT = "Level Select";
+    private static final String BUTTON_TEXT_LEVEL_SELECT = "Levels";
     
     /**
      * The text to display for the menu
@@ -77,11 +71,6 @@ public class GameoverScreen implements Screen, Disposable
     public static final int INDEX_BUTTON_MENU = 2;
     public static final int INDEX_BUTTON_RATE = 3;
     public static final int INDEX_BUTTON_LEVEL_SELECT = 4;
-	
-    /**
-     * Font size for the message
-     */
-    private static final float MESSAGE_FONT_SIZE = 24f;
     
     public GameoverScreen(final ScreenManager screen)
     {
@@ -183,18 +172,8 @@ public class GameoverScreen implements Screen, Disposable
         //create temporary rectangle
         Rect tmp = new Rect();
         
-        //create paint text object for the message
-        if (paint == null)
-        {
-	        //assign metrics
-        	paint = new Paint();
-        	paint.setColor(Color.WHITE);
-        	paint.setTextSize(MESSAGE_FONT_SIZE);
-	        paint.setTypeface(Font.getFont(Assets.FontGameKey.Default));
-        }
-        
         //get the rectangle around the message
-        paint.getTextBounds(message, 0, message.length(), tmp);
+        this.screen.getPaint().getTextBounds(message, 0, message.length(), tmp);
         
         //calculate the position of the message
         messageX = (GamePanel.WIDTH / 2) - (tmp.width() / 2);
@@ -335,9 +314,8 @@ public class GameoverScreen implements Screen, Disposable
             //only darken the background when the menu is displayed
             ScreenManager.darkenBackground(canvas);
             
-            //if message exists, draw the text, which has its own paint object
-            if (paint != null)
-                canvas.drawText(this.message, messageX, messageY, paint);
+            //if message exists, draw the text
+            canvas.drawText(this.message, messageX, messageY, screen.getPaint());
         
             //render the buttons
             for (int index = 0; index < buttons.size(); index++)
@@ -350,9 +328,6 @@ public class GameoverScreen implements Screen, Disposable
     @Override
     public void dispose()
     {
-        if (paint != null)
-        	paint = null;
-        
         if (buttons != null)
         {
 	        for (int index = 0; index < buttons.size(); index++)

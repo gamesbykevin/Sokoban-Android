@@ -130,15 +130,70 @@ public final class Levels implements ILevels
                 //if we already started, we reached the end of the level
                 if (start)
                 {
+                	//the text description of the level
+                	String levelDescription = "";
+                	
+                	switch (this.key)
+                	{
+	                	case Easy_A:
+	                		levelDescription = "Easy A - Level " + (getLevelTrackers().size() + 1);
+	                		break;
+	                		
+	                	case Easy_B:
+	                		levelDescription = "Easy B - Level " + (getLevelTrackers().size() + 1);
+	                		break;
+	                		
+	                	case Easy_C:
+	                		levelDescription = "Easy C - Level " + (getLevelTrackers().size() + 1);
+	                		break;
+	                		
+	                	case Easy_D:
+	                		levelDescription = "Easy D - Level " + (getLevelTrackers().size() + 1);
+	                		break;
+	                		
+	                	case Medium_A:
+	                		levelDescription = "Medium A - Level " + (getLevelTrackers().size() + 1);
+	                		break;
+	                		
+	                	case Medium_B:
+	                		levelDescription = "Medium B - Level " + (getLevelTrackers().size() + 1);
+	                		break;
+	                		
+	                	case Medium_C:
+	                		levelDescription = "Medium C - Level " + (getLevelTrackers().size() + 1);
+	                		break;
+	                		
+	                	case Medium_D:
+	                		levelDescription = "Medium D - Level " + (getLevelTrackers().size() + 1);
+	                		break;
+	                		
+	                	case Hard_A:
+	                		levelDescription = "Hard A - Level " + (getLevelTrackers().size() + 1);
+	                		break;
+	                		
+	                	case Hard_B:
+	                		levelDescription = "Hard B - Level " + (getLevelTrackers().size() + 1);
+	                		break;
+	                		
+	                	case Hard_C:
+	                		levelDescription = "Hard C - Level " + (getLevelTrackers().size() + 1);
+	                		break;
+	                		
+	                	case Hard_D:
+	                		levelDescription = "Hard D - Level " + (getLevelTrackers().size() + 1);
+	                		break;
+                	}
+                	
+                	
                     if (i == Files.getText(getKey()).getLines().size() - 1)
                     {
                         //add the info for this level
-                    	getLevelTrackers().add(new LevelInfo(lineStart, i, length));
+                    	getLevelTrackers().add(new LevelInfo(lineStart, i, length, levelDescription));
                     }
                     else
                     {
                         //add the info for this level
-                    	getLevelTrackers().add(new LevelInfo(lineStart, i - 1, length));
+                    	getLevelTrackers().add(new LevelInfo(lineStart, i - 1, length, levelDescription));
                     }
                     
                     //flag start false

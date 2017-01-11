@@ -10,12 +10,16 @@ public class LevelInfo
     //the start and end line of a given level
     private final int start, end, cols, rows;
     
-    public LevelInfo(final int start, final int end, final int cols)
+    //the text description of the level
+    private final String levelDescription;
+    
+    public LevelInfo(final int start, final int end, final int cols, final String levelDescription)
     {
         this.start = start;
         this.end = end;
         this.cols = cols;
         this.rows = end - start + 1;
+        this.levelDescription = levelDescription;
     }
     
     /**
@@ -52,5 +56,14 @@ public class LevelInfo
     public int getRows()
     {
         return this.rows;
+    }
+    
+    /**
+     * Get the level description
+     * @return The level description text we want to display to the user
+     */
+    public String getLevelDescription()
+    {
+    	return this.levelDescription;
     }
 }

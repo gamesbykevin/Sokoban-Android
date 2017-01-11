@@ -2,6 +2,7 @@ package com.gamesbykevin.sokoban.player;
 
 import com.gamesbykevin.sokoban.level.Level;
 import com.gamesbykevin.sokoban.level.tile.TileHelper;
+import com.gamesbykevin.sokoban.target.Target;
 
 /**
  * Player helper methods
@@ -129,6 +130,13 @@ public class PlayerHelper
      */
     public static void calculateTargets(final Player player, final Level level)
     {
+    	//make sure all targets in a level have the current destination marked
+    	for (Target block : level.getCurrent())
+    	{
+    		//assign current location so the undo is correct
+    		block.setDestination(block.getCol(), block.getRow());
+    	}
+    	
         //the neighboring locations
         final int col1, row1;
         final int col2, row2;
@@ -202,22 +210,5 @@ public class PlayerHelper
                 player.setMoves(player.getMoves() + 1);
             }
         }
-    }
-    
-    /**
-     * Get time description
-     * @param time Time elapsed
-     * @return Time description formatted similar to M:SS.sss
-     */
-    public static String getTimeDescription(final long time)
-    {
-        //calculate time
-        int secs = (int) (time / 1000);
-        final int mins = secs / 60;
-        secs = secs % 60;
-        final int milliseconds = (int) (time % 1000);
-        
-        //time description
-        return mins + ":" + String.format("%02d", secs) + ":" + String.format("%03d", milliseconds);
     }
 }

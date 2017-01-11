@@ -16,6 +16,9 @@ public class Target extends Cell implements Disposable
     //is this target at a goal
     private boolean goal = false;
     
+    //store the previous location in case we want to undo
+    private double previousCol, previousRow;
+    
     /**
      * Create a new Target with the specified location
      * @param col Column
@@ -27,6 +30,10 @@ public class Target extends Cell implements Disposable
         
         //assign current location as the destination
         this.destination = new Cell(col, row);
+        
+        //assign the previous location
+        this.previousCol = col;
+        this.previousRow = row;
     }
     
     @Override
@@ -54,12 +61,27 @@ public class Target extends Cell implements Disposable
     }
     
     /**
-     * Assign the destination
+     * Reset the location to the previous
+     */
+    public void undo()
+    {
+    	setCol(this.previousCol);
+    	setRow(this.previousRow);
+    	
+    	setDestination(getCol(), getRow());
+    }
+    
+    /**
+     * Assign the destination, as well as the current location
      * @param col Column of our destination
      * @param row Row of our destination
      */
     public void setDestination(final double col, final double row)
     {
+    	//assign current in case of undo
+    	this.previousCol = getCol();
+    	this.previousRow = getRow();
+    	    	
         //assign destination location
         this.destination.setCol(col);
         this.destination.setRow(row);

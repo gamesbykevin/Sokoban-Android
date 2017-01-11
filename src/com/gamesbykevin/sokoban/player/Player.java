@@ -7,12 +7,13 @@ import com.gamesbykevin.androidframework.anim.Animation;
 import com.gamesbykevin.androidframework.base.Cell;
 import com.gamesbykevin.androidframework.base.Entity;
 import com.gamesbykevin.androidframework.resources.Images;
-
+import com.gamesbykevin.androidframework.text.TimeFormat;
 import com.gamesbykevin.sokoban.assets.Assets;
 import com.gamesbykevin.sokoban.level.Level;
 import com.gamesbykevin.sokoban.level.LevelHelper;
 import com.gamesbykevin.sokoban.level.tile.TileHelper;
 import com.gamesbykevin.sokoban.panel.GamePanel;
+import com.gamesbykevin.sokoban.thread.MainThread;
 
 /**
  * The player that moves the blocks
@@ -27,10 +28,13 @@ public class Player extends Entity implements IPlayer
     private boolean selected = false;
     
     //speed to move
-    public static final double VELOCITY = 0.1;
+    public static final double VELOCITY = 0.25;
     
     //the number of moves the player has made
     public int moves = 0;
+    
+    //store the previous location in case we want to undo
+    private double previousCol, previousRow;
     
     /**
      * The different animations for the player
@@ -50,11 +54,10 @@ public class Player extends Entity implements IPlayer
     //track the time (milliseconds)
     private long totalTime = 0L;
     
-    //track the previous time (milliseconds)
-    private long previousTime = 0L;
-    
-    //do we stop the timer
-    private boolean stopTimer = true;
+    /**
+     * The amount of milliseconds that is passed per update
+     */
+    private static final long TIME_LAPSED_UPDATE = (1000 / MainThread.FPS);
     
     /**
      * Location where player stat's are rendered
@@ -62,17 +65,17 @@ public class Player extends Entity implements IPlayer
     public static final int INFO_X = 5;
     
     /**
-     * Location where player stats are rendered
+     * Location where player stat's are rendered
      */
     public static final int INFO_Y = 25;
     
     /**
-     * Location where a player's personal best stats are rendered
+     * Location where a player's personal best stat's are rendered
      */
-    public static final int PERSONAL_BEST_INFO_X = 165;
+    public static final int PERSONAL_BEST_INFO_X = 250;
     
     /**
-     * Location where a player's personal best stats are rendered
+     * Location where a player's personal best stat's are rendered
      */
     public static final int PERSONAL_BEST_INFO_Y = 25;
     
@@ -85,7 +88,7 @@ public class Player extends Entity implements IPlayer
         this.target = new Cell();
         
         //delay between each frame
-        final int delay = 125;
+        final int delay = 250;
         
         //sprite key
         final Assets.ImageGameKey key = Assets.ImageGameKey.Sprites;
@@ -137,14 +140,6 @@ public class Player extends Entity implements IPlayer
         setAnimation(Key.IdleSouth);
     }
     
-    /**
-     * Stop the timer
-     */
-    public void stopTimer()
-    {
-        this.stopTimer = true;
-    }
-    
     @Override
     public void reset(final Level level)
     {
@@ -168,9 +163,7 @@ public class Player extends Entity implements IPlayer
         setMoves(0);
         
         //reset timer
-        stopTimer();
         this.totalTime = 0;
-        
     }
     
     /**
@@ -264,14 +257,29 @@ public class Player extends Entity implements IPlayer
     }
     
     /**
-     * Set the destination
+     * Set the destination, and store the current location
      * @param col Column
      * @param row Row
      */
     public void setTarget(final double col, final double row)
     {
+    	//store in case we use the undo button
+    	this.previousCol = getCol();
+    	this.previousRow = getRow();
+    	
         this.target.setCol(col);
         this.target.setRow(row);
+    }
+    
+    /**
+     * Reset the location to the previous
+     */
+    public void undo()
+    {
+    	setCol(this.previousCol);
+    	setRow(this.previousRow);
+    	
+    	setTarget(getCol(), getRow());
     }
     
     /**
@@ -295,21 +303,8 @@ public class Player extends Entity implements IPlayer
      */
     public void update(final Level level)
     {
-        //if we stopped the timer, record the previous time
-        if (this.stopTimer)
-        {
-            this.stopTimer = false;
-            this.previousTime = System.currentTimeMillis();
-        }
-        
-        //get the current time
-        final long current = System.currentTimeMillis();
-        
         //add the difference to the total time
-        this.totalTime += (current - previousTime);
-        
-        //update the previous
-        this.previousTime = current;
+        this.totalTime += TIME_LAPSED_UPDATE;
         
         if (!hasTarget())
         {
@@ -319,7 +314,7 @@ public class Player extends Entity implements IPlayer
             //assign appropriate walking animation
             PlayerHelper.startWalking(this);
             
-            //else the player can move, so update velocity and (col, row) since we can move
+            //else the player can move, so update velocity and (column, row) since we can move
             PlayerHelper.manageVelocity(this);
             
             //if we made it to the target
@@ -332,25 +327,30 @@ public class Player extends Entity implements IPlayer
                 PlayerHelper.stopWalking(this);
             }
             
-            if (level.canFitWindow())
-            {
-                //update (x,y) render coordinates
-                updateXY(level);
-            }
-            else
-            {
-                //locate middle of screen
-                final int middleX = (GamePanel.WIDTH / 2) - (TileHelper.DEFAULT_DIMENSION / 2);
-                final int middleY = (GamePanel.HEIGHT / 2) - (TileHelper.DEFAULT_DIMENSION / 2);
-                
-                //set the start location (x,y) relative to where the player start is
-                level.setStartLocation(
-                middleX - (int)(getCol() * TileHelper.DEFAULT_DIMENSION), 
-                middleY - (int)(getRow() * TileHelper.DEFAULT_DIMENSION));
-                
-                //update (x,y) render coordinates
-                updateXY(level);
-            }
+            updateRenderCoordinates(level);
+        }
+    }
+    
+    public void updateRenderCoordinates(final Level level)
+    {
+        if (level.canFitWindow())
+        {
+            //update (x,y) render coordinates
+            updateXY(level);
+        }
+        else
+        {
+            //locate middle of screen
+            final int middleX = (GamePanel.WIDTH / 2) - (TileHelper.DEFAULT_DIMENSION / 2);
+            final int middleY = (GamePanel.HEIGHT / 2) - (TileHelper.DEFAULT_DIMENSION / 2);
+            
+            //set the start location (x,y) relative to where the player start is
+            level.setStartLocation(
+            middleX - (int)(getCol() * TileHelper.DEFAULT_DIMENSION), 
+            middleY - (int)(getRow() * TileHelper.DEFAULT_DIMENSION));
+            
+            //update (x,y) render coordinates
+            updateXY(level);
         }
     }
     
@@ -369,9 +369,9 @@ public class Player extends Entity implements IPlayer
         super.render(canvas);
         
         //render current move count
-        canvas.drawText("" + getMoves(), INFO_X, INFO_Y, paint);
+        canvas.drawText("" + getMoves(), INFO_X, INFO_Y * 2, paint);
         
         //draw timer
-        canvas.drawText(PlayerHelper.getTimeDescription(totalTime), INFO_X, INFO_Y * 2, paint);
+        canvas.drawText(TimeFormat.getDescription(TimeFormat.FORMAT_3, getTime()), INFO_X, INFO_Y * 3, paint);
     }
 }

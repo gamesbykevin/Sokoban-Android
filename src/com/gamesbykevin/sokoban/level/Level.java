@@ -193,6 +193,20 @@ public final class Level implements Disposable, ILevel
     }
     
     /**
+     * Undo the previous move
+     */
+    public void undo()
+    {
+        //check each block
+        for (Target block : getCurrent())
+        {
+        	block.undo();
+        	
+        	checkGoal(block);
+        }
+    }
+    
+    /**
      * Update the location of the blocks if not at their target
      */
     public void update()
@@ -248,27 +262,33 @@ public final class Level implements Disposable, ILevel
                 }
                 
                 //if the block is now at its destination, check if it is on a goal
-                if (block.hasDestination())
-                {
-                    if (TileHelper.isGoal(getType((int)block.getCol(), (int)block.getRow())))
-                    {
-                        //flag at goal
-                        block.setGoal(true);
-                        
-                        //play sound effect
-                        Audio.play(LevelHelper.hasCompleted(this) ? Assets.AudioGameKey.LevelComplete : Assets.AudioGameKey.Goal);
-                    }
-                    else
-                    {
-                        //this block is not on a goal
-                        block.setGoal(false);
-                    }
-                }
+                checkGoal(block);
             }
             else
             {
                 //if the block is now at its destination, check if it is on a goal
                 block.setGoal(TileHelper.isGoal(getType((int)block.getCol(), (int)block.getRow())));
+            }
+        }
+    }
+    
+    private void checkGoal(final Target block)
+    {
+        //if the block is now at its destination, check if it is on a goal
+        if (block.hasDestination())
+        {
+            if (TileHelper.isGoal(getType((int)block.getCol(), (int)block.getRow())))
+            {
+                //flag at goal
+                block.setGoal(true);
+                
+                //play sound effect
+                Audio.play(LevelHelper.hasCompleted(this) ? Assets.AudioGameKey.LevelComplete : Assets.AudioGameKey.Goal);
+            }
+            else
+            {
+                //this block is not on a goal
+                block.setGoal(false);
             }
         }
     }
