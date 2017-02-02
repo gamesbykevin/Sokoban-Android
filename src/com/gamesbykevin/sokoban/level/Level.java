@@ -13,6 +13,7 @@ import com.gamesbykevin.sokoban.level.tile.TileHelper;
 import com.gamesbykevin.sokoban.panel.GamePanel;
 import com.gamesbykevin.sokoban.player.Player;
 import com.gamesbykevin.sokoban.target.Target;
+import com.gamesbykevin.sokoban.thread.MainThread;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -211,6 +212,9 @@ public final class Level implements Disposable, ILevel
      */
     public void update()
     {
+    	//velocity will depend if debugging
+    	final double velocity = (MainThread.DEBUG) ? Player.VELOCITY_DEBUG : Player.VELOCITY; 
+    	
         //check each block location
         for (Target block : getCurrent())
         {
@@ -218,46 +222,46 @@ public final class Level implements Disposable, ILevel
             {
                 if (block.getCol() < block.getDestination().getCol())
                 {
-                    if (block.getCol() + Player.VELOCITY >= block.getDestination().getCol())
+                    if (block.getCol() + velocity >= block.getDestination().getCol())
                     {
                         block.setCol(block.getDestination().getCol());
                     }
                     else
                     {
-                        block.setCol(block.getCol() + Player.VELOCITY);
+                        block.setCol(block.getCol() + velocity);
                     }
                 }
                 else if (block.getCol() > block.getDestination().getCol())
                 {
-                    if (block.getCol() - Player.VELOCITY <= block.getDestination().getCol())
+                    if (block.getCol() - velocity <= block.getDestination().getCol())
                     {
                         block.setCol(block.getDestination().getCol());
                     }
                     else
                     {
-                        block.setCol(block.getCol() - Player.VELOCITY);
+                        block.setCol(block.getCol() - velocity);
                     }
                 }
                 else if (block.getRow() < block.getDestination().getRow())
                 {
-                    if (block.getRow() + Player.VELOCITY >= block.getDestination().getRow())
+                    if (block.getRow() + velocity >= block.getDestination().getRow())
                     {
                         block.setRow(block.getDestination().getRow());
                     }
                     else
                     {
-                        block.setRow(block.getRow() + Player.VELOCITY);
+                        block.setRow(block.getRow() + velocity);
                     }
                 }
                 else if (block.getRow() > block.getDestination().getRow())
                 {
-                    if (block.getRow() - Player.VELOCITY <= block.getDestination().getRow())
+                    if (block.getRow() - velocity <= block.getDestination().getRow())
                     {
                         block.setRow(block.getDestination().getRow());
                     }
                     else
                     {
-                        block.setRow(block.getRow() - Player.VELOCITY);
+                        block.setRow(block.getRow() - velocity);
                     }
                 }
                 

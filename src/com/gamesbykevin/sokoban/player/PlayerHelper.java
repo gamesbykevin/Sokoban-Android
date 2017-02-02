@@ -3,6 +3,7 @@ package com.gamesbykevin.sokoban.player;
 import com.gamesbykevin.sokoban.level.Level;
 import com.gamesbykevin.sokoban.level.tile.TileHelper;
 import com.gamesbykevin.sokoban.target.Target;
+import com.gamesbykevin.sokoban.thread.MainThread;
 
 /**
  * Player helper methods
@@ -76,48 +77,51 @@ public class PlayerHelper
      */
     public static void manageVelocity(final Player player)
     {
+    	//velocity will depend if debugging
+    	final double velocity = (MainThread.DEBUG) ? Player.VELOCITY_DEBUG : Player.VELOCITY;
+    	
         if (player.getCol() < player.getTarget().getCol())
         {
-            if (player.getCol() + Player.VELOCITY >= player.getTarget().getCol())
+            if (player.getCol() + velocity >= player.getTarget().getCol())
             {
                 player.setCol(player.getTarget().getCol());
             }
             else
             {
-                player.setCol(player.getCol() + Player.VELOCITY);
+                player.setCol(player.getCol() + velocity);
             }
         }
         else if (player.getCol() > player.getTarget().getCol())
         {
-            if (player.getCol() - Player.VELOCITY <= player.getTarget().getCol())
+            if (player.getCol() - velocity <= player.getTarget().getCol())
             {
                 player.setCol(player.getTarget().getCol());
             }
             else
             {
-                player.setCol(player.getCol() - Player.VELOCITY);
+                player.setCol(player.getCol() - velocity);
             }
         }
         else if (player.getRow() < player.getTarget().getRow())
         {
-            if (player.getRow() + Player.VELOCITY >= player.getTarget().getRow())
+            if (player.getRow() + velocity >= player.getTarget().getRow())
             {
                 player.setRow(player.getTarget().getRow());
             }
             else
             {
-                player.setRow(player.getRow() + Player.VELOCITY);
+                player.setRow(player.getRow() + velocity);
             }
         }
         else if (player.getRow() > player.getTarget().getRow())
         {
-            if (player.getRow() - Player.VELOCITY <= player.getTarget().getRow())
+            if (player.getRow() - velocity <= player.getTarget().getRow())
             {
                 player.setRow(player.getTarget().getRow());
             }
             else
             {
-                player.setRow(player.getRow() - Player.VELOCITY);
+                player.setRow(player.getRow() - velocity);
             }
         }
     }

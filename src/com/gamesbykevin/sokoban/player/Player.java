@@ -30,6 +30,9 @@ public class Player extends Entity implements IPlayer
     //speed to move
     public static final double VELOCITY = 0.25;
     
+    //player velocity when debugging
+    public static final double VELOCITY_DEBUG = 0.1;
+    
     //the number of moves the player has made
     public int moves = 0;
     
